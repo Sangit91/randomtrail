@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
     <header>
         <div class="wrap nav">
@@ -25,29 +24,36 @@
             <!-- Left: dApp -->
             <section class="card">
                 <div class="row">
-                    <h1>Random Trait Generator</h1>
+                    <h1>NFT Trait Generator</h1>
+                    <!-- SỬA LỖI: Đảm bảo có span id="status" -->
                     <span id="status" class="badge"><i class="ri-blaze-line"></i><span>Wallet: Not connected</span></span>
                 </div>
-                <p class="sub">Click “Roll Traits” to generate a <em>randomized</em> off‑chain trait kit. Then, optionally mint it on ZenChain Testnet.</p>
+                <p class="sub">Roll for a unique trait kit, generate its image, and mint it as a real NFT on ZenChain Testnet.</p>
                 <div class="panel">
-                    <span class="chip">Gasless (Roll)</span>
-                    <span class="chip">On-chain (Mint)</span>
-                    <span class="chip">Deterministic seed (per address)</span>
+                    <span class="chip">On-chain NFT (ERC-721)</span>
+                    <span class="chip">Decentralized Storage (IPFS)</span>
                 </div>
+
                 <div class="row" style="margin:18px 0 10px">
-                    <button id="roll" class="btn"><i class="ri-dice-5-line"></i> Roll Traits</button>
-                    <button id="copy" class="btn ghost"><i class="ri-file-copy-2-line"></i> Copy</button>
-                    <a id="tweet" class="btn ghost" target="_blank" rel="noreferrer"><i class="ri-twitter-x-line"></i> Share</a>
+                    <button id="roll" class="btn"><i class="ri-dice-5-line"></i> 1. Roll Traits</button>
+                    <!-- SỬA LỖI: Đảm bảo có button id="preview" -->
+                    <button id="preview" class="btn ghost hidden"><i class="ri-eye-line"></i> Preview</button>
+                    <button id="mint" class="btn hidden"><i class="ri-copper-diamond-line"></i> 2. Mint NFT</button>
                 </div>
-                <div id="result" class="out mono">—</div>
-                <div class="row" style="margin-top:15px; justify-content: flex-start;">
-                    <button id="mint" class="btn hidden"><i class="ri-coins-line"></i> Mint Trait Kit (On-chain)</button>
-                    <a id="explorerLink" class="btn ghost hidden" target="_blank" rel="noreferrer" style="margin-left: 10px;"><i class="ri-link"></i> View on Explorer</a>
+                
+                <canvas id="imageCanvas" width="500" height="500" class="hidden"></canvas>
+
+                <div id="result" class="out mono" style="min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <span id="resultText">Your rolled traits will appear here.</span>
+                    <img id="resultImage" class="hidden" style="max-width: 100px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1)"/>
                 </div>
-                <div class="footer">Tip: The random seed = keccak256(address + chainId + time‑bucket). For verifiable randomness on-chain, consider Chainlink VRF.</div>
+
+                <div id="mintStatus" class="sub" style="margin-top: 15px; min-height: 20px;"></div>
+                <a id="explorerLink" class="btn ghost hidden" target="_blank" rel="noreferrer" style="margin-top: 10px;"><i class="ri-link"></i> View Transaction</a>
+
             </section>
 
-            <!-- Right: Wallet & Chain info & Minted Traits -->
+            <!-- Right: Wallet & NFT Collection -->
             <aside class="card col">
                 <div>
                     <div class="muted">Address</div>
@@ -58,32 +64,41 @@
                     <div id="net" class="mono">—</div>
                 </div>
                 <div>
-                    <div class="muted">Contract Address</div>
-                    <div class="mono" id="contract">—</div>
+                    <div class="muted">NFT Contract</div>
+                    <div class="mono" id="contract" style="word-break: break-all;">—</div>
                 </div>
                 <hr style="border-color: rgba(255,255,255,.06); margin: 20px 0;">
                 <div>
                     <div class="muted row">
-                        <span>Your Minted Traits</span>
+                        <span>Your NFT Collection</span>
                         <button id="viewMints" class="btn ghost hidden" style="padding: 6px 10px; font-size: 12px;"><i class="ri-refresh-line"></i> Refresh</button>
                     </div>
-                    <div id="mintsContainer" class="col" style="margin-top: 10px;">
-                        <div class="muted">Connect wallet to see your minted traits.</div>
+                    <div id="mintsContainer" class="col" style="margin-top: 10px; display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px;">
+                        <div class="muted">Connect wallet to see your NFTs.</div>
                     </div>
                 </div>
             </aside>
         </div>
     </main>
+    
+    <div id="previewModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <i id="closeModal" class="ri-close-line modal-close"></i>
+            <h2>NFT Preview</h2>
+            <img id="previewImage" src="" alt="NFT Preview Image">
+        </div>
+    </div>
 
-    <!-- Ethers.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <!-- Your dApp's logic -->
-    <script src="js/main.js"></script>
     <footer class="site-footer">
         <div class="wrap">
             <p>Created with <i class="ri-heart-fill" style="color: #ff6b6b;"></i> by <span class="creator-name">Tử Vận</span></p>
             <p class="sub-footer">A Mini dApp for ZenChain Testnet</p>
         </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/image-manifest.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
