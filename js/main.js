@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==============================================================================
     // === CÁC THÔNG TIN CẤU HÌNH ====================================================
     // ==============================================================================
-    const CONTRACT_ADDRESS = "0xd77aA64Decf6740BA6Ee3C2A50664a54864672d9";
+    const CONTRACT_ADDRESS = "0xf8e81D47203A594245E36C48e151709F0C19fBe8";
     // PINATA_JWT sẽ được lấy từ file js/config.js
     const ZENCHAIN_TESTNET_CHAIN_ID = 8408;
     const ZENCHAIN_TESTNET_NAME = 'ZenChain Testnet';
@@ -31,13 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"initialOwner","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"getTokensOfOwner","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"string","name":"uri","type":"string"}],"name":"safeMint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
     
     const RARITY_WEIGHTS = [ ...Array(50).fill('Common'), ...Array(25).fill('Uncommon'), ...Array(15).fill('Rare'), ...Array(8).fill('Epic'), ...Array(2).fill('Legendary') ];
-
-    const traitImagePaths = {
-        skin: (trait) => `assets/images/skin/${trait}.png`,
-        eyes: (trait) => `assets/images/eyes/${trait}.png`,
-        mouth: (trait) => `assets/images/mouth/${trait}.png`,
-        hat: (trait) => `assets/images/hat/${trait}.png`,
-    };
 
     // --- CÁC HÀM CHÍNH ---
     
@@ -118,8 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function rollTraits() {
         if (!address) return alert("Please connect your wallet first.");
         
+        // --- CẢI TIẾN: Di chuyển phần kiểm tra manifest lên đầu ---
         if (typeof IMAGE_MANIFEST === 'undefined' || typeof TRAIT_ORDER === 'undefined') {
-            return alert('Image manifest not found. Please run "node create-manifest.js" first.');
+            alert('Essential application files (image_manifest.js or trait_order.js) are missing. The app cannot function.');
+            console.error("CRITICAL: IMAGE_MANIFEST or TRAIT_ORDER is not defined.");
+            return;
         }
 
         const seed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${address}:${chainId}:${Date.now()}`));
@@ -141,13 +137,19 @@ document.addEventListener('DOMContentLoaded', () => {
         explorerLink.classList.add('hidden');
     }
 
+    // --- THAY ĐỔI: Thêm lớp kiểm tra an toàn trong hàm pick ---
     function pick(arr, seed) {
         if (!arr || arr.length === 0) {
-            console.error("Attempted to pick from an empty or undefined array. Check your image folders and manifest.", arr);
+            console.error("Attempted to pick from an empty or undefined array. Check image folders and manifest.", arr);
             return "default";
         }
         const idx = ethers.BigNumber.from(seed.slice(0, 10)).mod(arr.length);
-        return arr[idx];
+        const choice = arr[idx];
+        if (typeof choice === 'undefined' || choice === null) {
+            console.error(`Picked an invalid value (undefined/null) at index ${idx}. Returning 'default'.`, arr);
+            return "default";
+        }
+        return choice;
     }
 
     async function generateAndDisplayImage(traits) {
@@ -161,8 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (const layerPath of imageLayers) {
             try {
-                if (layerPath.includes('default.png')) {
-                    throw new Error("Cannot render a 'default' trait because a source folder was empty.");
+                // --- CẢI TIẾN: Kiểm tra chặt chẽ hơn, nếu pick trả về "default" thì báo lỗi ---
+                if (layerPath.includes('/default.png')) {
+                     throw new Error(`A trait folder was empty, resulting in a 'default' trait which cannot be rendered.`);
                 }
                 const img = await loadImage(layerPath);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -180,89 +183,100 @@ document.addEventListener('DOMContentLoaded', () => {
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = () => resolve(img);
-            img.onerror = reject;
+            img.onerror = (err) => reject(new Error(`Failed to load image at: ${src}. Details: ${err}`));
             img.src = src;
         });
     }
 
     async function uploadToPinata(file, fileName) {
-        if (typeof PINATA_JWT === 'undefined') {
-            throw new Error("Pinata JWT key not found. Make sure it's defined in js/config.js");
+        if (typeof PINATA_JWT === 'undefined' || !PINATA_JWT) {
+            throw new Error("Pinata JWT key not found or is empty. Make sure it's defined in js/config.js");
         }
         const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
         let data = new FormData();
         data.append('file', file, fileName);
         const response = await fetch(url, { method: 'POST', headers: { 'Authorization': `Bearer ${PINATA_JWT}` }, body: data });
-        if (!response.ok) throw new Error(`Pinata JWT Error: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Pinata API Error: ${response.statusText}`);
         return await response.json();
     }
 
     
-async function mintNFT() {
-    if (!currentTraits) return alert("Please roll for traits first!");
-    
-    // CẢI TIẾN: Thêm bước kiểm tra kết nối trước khi mint
-    try {
-        const accounts = await provider.listAccounts();
-        if (accounts.length === 0) {
-            // Nếu không có tài khoản nào được kết nối, yêu cầu kết nối lại
-            alert("Your wallet seems to be disconnected. Please connect again.");
-            await connectWallet(); // Cố gắng kết nối lại
-            return; // Dừng hàm mint
-        }
-    } catch (e) {
-        alert("Could not verify wallet connection. Please try reconnecting.");
-        return;
-    }
-    
-    mintBtn.disabled = true;
-    previewBtn.classList.add('hidden');
-    mintBtn.innerHTML = `<i class="ri-loader-4-line spin"></i> Minting...`;
-    
-    try {
-        mintStatusEl.textContent = "Step 1/3: Uploading image to IPFS...";
-        const imageBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-        const imageResult = await uploadToPinata(imageBlob, `trait-kit-image-${Date.now()}.png`);
-        const imageIpfsUrl = `ipfs://${imageResult.IpfsHash}`;
-
-        mintStatusEl.textContent = "Step 2/3: Uploading metadata to IPFS...";
-        const totalSupply = await contract.totalSupply();
-        const metadata = {
-            name: `TraitKit NFT #${Number(totalSupply) + 1}`,
-            description: "A unique, randomly generated TraitKit NFT.",
-            image: imageIpfsUrl,
-            attributes: Object.entries(currentTraits).map(([trait_type, value]) => ({ trait_type, value }))
-        };
-        const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
-        const metadataResult = await uploadToPinata(metadataBlob, `metadata-${Date.now()}.json`);
-        const metadataIpfsUrl = `ipfs://${metadataResult.IpfsHash}`;
-
-        mintStatusEl.textContent = "Step 3/3: Confirm transaction in your wallet...";
-        const tx = await contract.safeMint(address, metadataIpfsUrl);
-        await tx.wait();
-
-        mintStatusEl.textContent = `NFT Minted Successfully!`;
-        explorerLink.href = `${ZENCHAIN_TESTNET_EXPLORER_URL}/tx/${tx.hash}`;
-        explorerLink.classList.remove('hidden');
+    async function mintNFT() {
+        if (!currentTraits) return alert("Please roll for traits first!");
         
-        mintBtn.innerHTML = `<i class="ri-check-line"></i> Minted!`;
-        setTimeout(() => { mintBtn.innerHTML = `<i class="ri-copper-diamond-line"></i> 2. Mint NFT`; }, 5000);
+        mintBtn.disabled = true;
+        previewBtn.classList.add('hidden');
+        mintBtn.innerHTML = `<i class="ri-loader-4-line spin"></i> Minting...`;
+        
+        try {
+            mintStatusEl.textContent = "Step 1/3: Uploading image to IPFS...";
+            const imageBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const imageResult = await uploadToPinata(imageBlob, `trait-kit-image-${Date.now()}.png`);
+            const imageIpfsUrl = `ipfs://${imageResult.IpfsHash}`;
 
-        await displayUserNFTs();
+            mintStatusEl.textContent = "Step 2/3: Uploading metadata to IPFS...";
+            
+            // --- THAY ĐỔI: Sử dụng timestamp để đặt tên NFT thay vì totalSupply để tránh trùng lặp ---
+            const uniqueId = Date.now();
+            const metadata = {
+                name: `TraitKit NFT #${uniqueId}`,
+                description: "A unique, randomly generated TraitKit NFT.",
+                image: imageIpfsUrl,
+                attributes: Object.entries(currentTraits).map(([trait_type, value]) => ({ trait_type, value }))
+            };
+            const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
+            const metadataResult = await uploadToPinata(metadataBlob, `metadata-${uniqueId}.json`);
+            const metadataIpfsUrl = `ipfs://${metadataResult.IpfsHash}`;
 
-    } catch (error) {
-        console.error("Minting failed:", error);
-        if (error.code === 'ACTION_REJECTED') {
-            mintStatusEl.textContent = "Transaction was rejected. Please try again.";
-        } else {
-            mintStatusEl.textContent = "An error occurred during minting. Check console.";
+            mintStatusEl.textContent = "Step 3/3: Confirm transaction in your wallet...";
+            const tx = await contract.safeMint(address, metadataIpfsUrl);
+            await tx.wait();
+
+            mintStatusEl.textContent = `NFT Minted Successfully!`;
+            explorerLink.href = `${ZENCHAIN_TESTNET_EXPLORER_URL}/tx/${tx.hash}`;
+            explorerLink.classList.remove('hidden');
+            
+            mintBtn.innerHTML = `<i class="ri-check-line"></i> Minted!`;
+            
+            // --- CẢI TIẾN: Thêm độ trễ trước khi làm mới danh sách NFT ---
+            setTimeout(() => {
+                displayUserNFTs();
+            }, 2500); // Đợi 2.5 giây để blockchain cập nhật
+
+        } catch (error) {
+            console.error("Minting failed:", error);
+            mintBtn.innerHTML = `<i class="ri-copper-diamond-line"></i> 2. Mint NFT`; // Đặt lại nút ngay lập tức
+            if (error.code === 'ACTION_REJECTED') {
+                mintStatusEl.textContent = "Transaction was rejected. Please try again.";
+            } else if (error.message.includes("Pinata")) {
+                 mintStatusEl.textContent = "Error: Could not upload to IPFS. Check Pinata key or network.";
+            } else {
+                mintStatusEl.textContent = "An error occurred during minting. Check console.";
+            }
+        } finally {
+            mintBtn.disabled = false;
+            previewBtn.classList.remove('hidden');
         }
-    } finally {
-        mintBtn.disabled = false;
-        previewBtn.classList.remove('hidden');
-        mintBtn.innerHTML = `<i class="ri-copper-diamond-line"></i> 2. Mint NFT`;
     }
-}
+
+    // --- CẢI TIẾN: Hàm fetch metadata với nhiều gateway dự phòng và timeout ---
+    async function fetchWithFallback(ipfsUri) {
+        const gateways = [
+            'https://gateway.pinata.cloud/ipfs/',
+            'https://ipfs.io/ipfs/',
+            'https://cloudflare-ipfs.com/ipfs/'
+        ];
+        for (const gateway of gateways) {
+            try {
+                const url = ipfsUri.replace('ipfs://', gateway);
+                const response = await fetch(url, { signal: AbortSignal.timeout(10000) }); // Timeout 10 giây
+                if (response.ok) return response.json();
+            } catch (e) {
+                console.warn(`Gateway ${gateway} failed for ${ipfsUri}. Trying next...`);
+            }
+        }
+        throw new Error(`All IPFS gateways failed to fetch: ${ipfsUri}`);
+    }
 
     async function displayUserNFTs() {
         if (!address || !contract) return;
@@ -276,36 +290,29 @@ async function mintNFT() {
             }
 
             mintsContainer.innerHTML = '';
-            await Promise.all(uris.map(async (uri, index) => {
+            // --- CẢI TIẾN: Không dùng Promise.all để tránh một lỗi làm hỏng tất cả ---
+            for (const uri of uris) {
                 const nftElement = document.createElement('div');
                 nftElement.className = 'nft-item';
-                nftElement.innerHTML = `<div style="width: 80px; height: 80px; border-radius: 8px; background-color: #333; display: flex; align-items: center; justify-content: center;"><i class="ri-loader-4-line spin"></i></div>`;
+                nftElement.innerHTML = `<div class="nft-placeholder"><i class="ri-loader-4-line spin"></i></div>`;
                 mintsContainer.appendChild(nftElement);
-
+                
                 try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 15000);
-                    const response = await fetch(uri.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'), { signal: controller.signal });
-                    clearTimeout(timeoutId);
-
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    
-                    const metadata = await response.json();
-                    const imgUrl = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+                    const metadata = await fetchWithFallback(uri);
+                    const imgUrl = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'); // Ưu tiên Pinata để hiển thị
                     
                     nftElement.innerHTML = `<img src="${imgUrl}" alt="${metadata.name}" title="${metadata.name}">`;
                     
                     const imgElement = nftElement.querySelector('img');
                     imgElement.onerror = () => {
-                        imgElement.alt = "Image load failed";
-                        imgElement.style.border = "2px solid red";
+                         nftElement.innerHTML = `<div class="nft-error">Image Fail</div>`;
                     };
 
                 } catch (e) {
                     console.error(`Could not load NFT with URI ${uri}`, e);
-                    nftElement.innerHTML = `<div style="width: 80px; height: 80px; border-radius: 8px; border: 2px solid red; display: flex; align-items: center; justify-content: center; font-size: 10px; text-align: center; color: red;">Load Failed</div>`;
+                    nftElement.innerHTML = `<div class="nft-error">Load Fail</div>`;
                 }
-            }));
+            }
         } catch (error) {
             console.error("Failed to load user NFTs from contract:", error);
             mintsContainer.innerHTML = `<div class="muted">Error loading your NFTs. Check console.</div>`;
