@@ -1,55 +1,489 @@
-:root{
-    --bg:#0b0f14;
-    --card:#121821;
-    --muted:#7b8a9a;
-    --text:#eaf2ff;
-    --accent:#5ab0ff;
-    --accent-2:#a07bff;
-    --radius:16px;
-    --shadow:0 10px 30px rgba(0,0,0,.35);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:linear-gradient(180deg,#0b0f14, #0d131b 60%, #0b0f14);color:var(--text);font:16px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
-a{color:var(--accent)}
-.wrap{max-width:960px;margin:0 auto;padding:24px}
-header{position:sticky;top:0;backdrop-filter:saturate(120%) blur(8px);background:rgba(11,15,20,.6);border-bottom:1px solid rgba(255,255,255,.06);z-index:10}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
-.brand i{font-size:22px;color:var(--accent)}
-.btn{appearance:none;border:0;border-radius:999px;padding:10px 16px;color:#081018;background:linear-gradient(90deg,var(--accent),var(--accent-2));font-weight:700;display:inline-flex;align-items:center;gap:8px;cursor:pointer;box-shadow:var(--shadow); transition: all 0.2s ease;}
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.1)}
-main{padding:40px 0}
-.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px}
-@media (max-width:860px){.grid{grid-template-columns:1fr}}
-.card{background:radial-gradient(1200px 300px at 50% -50%, rgba(90,176,255,.15), transparent 60%), var(--card); border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px}
-h1{font-size:28px;margin:6px 0 2px}
-.sub{color:var(--muted);font-size:14px}
-.panel{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
-.chip{border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:999px;color:var(--muted);font-size:13px}
-.out{background:#0c121a;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;min-height:84px; word-break: break-all;}
-.muted{color:var(--muted)}
-.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
-.row{display:flex;align-items:center;gap:10px;justify-content:space-between}
-.col{display:flex;flex-direction:column;gap:8px}
-.hidden{display:none}
-.footer{margin-top:24px;color:var(--muted);font-size:13px}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(160,123,255,.12);border:1px solid rgba(160,123,255,.35)}
+/* ===================================================================== */
+/* === STYLE.CSS === */
+/* ===================================================================== */
 
-/* Animation for loading spinner */
+:root {
+    --bg-dark: #0D1117;
+    --bg-light: #161B22;
+    --card: #1A2029;
+    --border: rgba(255, 255, 255, 0.08);
+    --muted: #8B949E;
+    --text: #C9D1D9;
+    --accent-blue: #58A6FF;
+    --accent-purple: #A37BFF;
+    --accent-green: #3FB950;
+    --accent-red: #F85149;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --shadow-glow: 0 0 40px rgba(88, 166, 255, 0.15);
+}
+
+/* Đăng ký một custom property để animation viền chạy mượt mà hơn (Houdini) */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--bg-dark);
+    color: var(--text);
+    font: 16px/1.5 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+.wrap {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* --- HEADER --- */
+header {
+    position: sticky;
+    top: 0;
+    backdrop-filter: saturate(150%) blur(10px);
+    background: rgba(13, 17, 23, 0.7);
+    border-bottom: 1px solid var(--border);
+    z-index: 10;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: .2px;
+}
+
+.brand i {
+    font-size: 24px;
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- BUTTONS --- */
+.btn {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 20px;
+    color: #fff;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn.ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: none;
+}
+
+.btn.ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+
+/* --- MAIN LAYOUT & CARDS --- */
+main {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+}
+
+.grid > .card {
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background: radial-gradient(1000px 300px at 50% -50px, rgba(88, 166, 255, .1), transparent 80%), var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glow);
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- TYPOGRAPHY & CONTENT --- */
+h1 {
+    font-size: 32px;
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.title-gradient {
+    font-size: 28px;
+    background: linear-gradient(90deg, #f7b733, #fc4a1a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+.sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 100%;
+    margin: 0;
+}
+
+.panel {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.chip {
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.out {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    word-break: break-all;
+    transition: all 0.2s ease;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.mono {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-size: 14px;
+    color: #a5d6ff;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- UI ELEMENTS & STATUS --- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(163, 123, 255, .1);
+    border: 1px solid rgba(163, 123, 255, .2);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge i {
+    color: var(--accent-purple);
+}
+
+#imageCanvas {
+    background: var(--bg-light);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border);
+    max-width: 100%;
+    height: auto;
+}
+
+#result {
+    transition: all 0.3s ease-in-out;
+}
+
+/* --- ANIMATIONS --- */
 .spin {
     animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
-/* --- Site Footer (Phần cũ được giữ lại) --- */
+/* --- NFT COLLECTION STYLING --- */
+#mintsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+#mintsContainer .muted {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.nft-item, .nft-placeholder, .nft-error {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
+}
+
+.nft-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    transition: transform 0.2s ease-in-out;
+}
+
+.nft-item img:hover {
+    transform: scale(1.08);
+    cursor: pointer;
+}
+
+.nft-error {
+    background-color: rgba(248, 81, 73, 0.1);
+    border-color: rgba(248, 81, 73, 0.3);
+    color: var(--accent-red);
+}
+
+/* --- HIỆU ỨNG VIỀN GRADIENT TĨNH CHO KHUNG KẾT QUẢ --- */
+#result.out {
+    border: 2px solid transparent;
+    background: linear-gradient(var(--bg-light), var(--bg-light)) padding-box,
+                linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) border-box;
+    border-radius: var(--radius-md);
+}
+
+/* ===================================================================== */
+/* === MODAL PREVIEW STYLING (PHIÊN BẢN ĐẲNG CẤP - HIGH-END) === */
+/* ===================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 17, 23, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+
+.modal-content {
+    width: 480px;
+    max-width: 90vw;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    
+    /* HIỆU ỨNG VIỀN CHẠY HIỆU NĂNG CAO */
+    border: 3px solid;
+    border-image: conic-gradient(from var(--angle), 
+                                  var(--card), 
+                                  var(--accent-purple), 
+                                  var(--accent-blue), 
+                                  var(--accent-purple), 
+                                  var(--card)) 1;
+    animation: border-spin 4s linear infinite;
+}
+
+@keyframes border-spin {
+    to { --angle: 360deg; }
+}
+
+/* --- Modal Header --- */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header span {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.modal-close-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 22px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+}
+
+/* --- Modal Body & Image --- */
+.modal-body {
+    padding: 8px;
+    position: relative;
+    overflow: hidden;
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+}
+
+#previewImage {
+    width: 100%;
+    height: auto;
+    border-radius: calc(var(--radius-md) - 2px);
+    display: block;
+}
+
+/* --- Overlay Footer --- */
+.overlay-footer {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: space-around;
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom-left-radius: calc(var(--radius-md) - 2px);
+    border-bottom-right-radius: calc(var(--radius-md) - 2px);
+}
+
+.detail-item {
+    text-align: center;
+}
+
+.detail-item span {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item strong {
+    display: block;
+    font-size: 16px;
+    color: var(--text);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* --- MÀU SẮC CHO CÁC CẤP ĐỘ HIẾM --- */
+.rarity-common { color: var(--text) !important; }
+.rarity-uncommon { color: var(--accent-green) !important; }
+.rarity-rare { color: var(--accent-blue) !important; }
+.rarity-epic { color: var(--accent-purple) !important; }
+.rarity-legendary { color: #ffaf00 !important; }
+
+/* --- SITE FOOTER --- */
 .site-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 30px 0;
+    border-top: 1px solid var(--border);
+    padding: 40px 0;
     margin-top: 40px;
     text-align: center;
     color: var(--muted);
@@ -62,8 +496,7 @@ h1{font-size:28px;margin:6px 0 2px}
 
 .creator-name {
     font-weight: 600;
-    color: var(--accent);
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -73,86 +506,10 @@ h1{font-size:28px;margin:6px 0 2px}
     opacity: 0.7;
 }
 
-/* --- NFT Collection Styling --- */
-#mintsContainer {
-    display: flex;
-    flex-direction: row; /* Sắp xếp các NFT theo hàng ngang */
-    flex-wrap: wrap;     /* Cho phép xuống hàng khi không đủ chỗ */
-    gap: 10px;           /* Khoảng cách giữa các NFT */
-}
-
-#mintsContainer .muted {
-    width: 100%; /* Đảm bảo text loading/error chiếm toàn bộ chiều rộng */
-}
-
-.nft-item img {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.2s ease-in-out;
-}
-
-.nft-item img:hover {
-    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi di chuột qua */
-    cursor: pointer;
-}
-
-/* --- Modal Preview Styling (ĐÃ SỬA LỖI) --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+hr {
+    border: none;
+    height: 1px;
+    background-color: var(--border);
+    margin: 24px 0;
     width: 100%;
-    height: 100%;
-    background: rgba(11, 15, 20, 0.8);
-    backdrop-filter: blur(5px);
-    display: flex; /* Sẽ là 'flex' khi hiển thị */
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-/* SỬA LỖI QUAN TRỌNG: 
-   Khi có class 'hidden', modal sẽ hoàn toàn bị loại bỏ khỏi trang,
-   không còn chặn click chuột nữa.
-*/
-.modal-overlay.hidden {
-    display: none;
-}
-
-.modal-content {
-    background: var(--card);
-    padding: 30px;
-    border-radius: var(--radius);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow);
-    position: relative;
-    text-align: center;
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-}
-
-#previewImage {
-    max-width: 400px;
-    max-height: 400px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 24px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.modal-close:hover {
-    color: var(--text);
 }
