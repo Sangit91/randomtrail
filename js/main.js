@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==============================================================================
     // === CÁC THÔNG TIN CẤU HÌNH ====================================================
     // ==============================================================================
-    const CONTRACT_ADDRESS = "0xf8e81D47203A594245E36C48e151709F0C19fBe8";
+    const CONTRACT_ADDRESS = "0x6BB161965157538bb595b70d20A8F11286c5700e";
     // PINATA_JWT sẽ được lấy từ file js/config.js
     const ZENCHAIN_TESTNET_CHAIN_ID = 8408;
     const ZENCHAIN_TESTNET_NAME = 'ZenChain Testnet';
@@ -319,13 +319,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- HÀM MỞ MODAL PREVIEW ĐÃ ĐƯỢC NÂNG CẤP ---
     function openPreviewModal() {
-        if (resultImageEl.src && !resultImageEl.classList.contains('hidden')) {
-            previewImage.src = resultImageEl.src;
-            previewModal.classList.remove('hidden');
-        } else {
+        if (!currentTraits || resultImageEl.classList.contains('hidden')) {
             alert("Please roll for traits first to generate a valid image.");
+            return;
         }
+
+        // Cập nhật ảnh preview
+        previewImage.src = resultImageEl.src;
+
+        // Cập nhật thông tin traits
+        const previewRarityEl = $('previewRarity');
+        const previewCharacterEl = $('previewCharacter');
+
+        // Lấy thông tin từ biến global 'currentTraits'
+        const rarity = currentTraits.rarity || 'N/A';
+        // Giả định trait nhân vật nằm trong key '01_character' từ TRAIT_ORDER
+        const character = currentTraits[TRAIT_ORDER[0]] || 'N/A';
+
+        previewRarityEl.textContent = rarity;
+        previewCharacterEl.textContent = character;
+
+        // Thêm class màu sắc cho độ hiếm (tùy chọn nhưng rất đẹp)
+        previewRarityEl.className = `rarity-${rarity.toLowerCase()}`;
+
+        // Hiển thị modal
+        previewModal.classList.remove('hidden');
     }
 
     function closePreviewModal() {

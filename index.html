@@ -82,11 +82,33 @@
         </div>
     </main>
     
+<!-- ======================================================== -->
+<!-- === MODAL PREVIEW PHIÊN BẢN ĐẲNG CẤP (HIGH-END) === -->
+<!-- ======================================================== -->
     <div id="previewModal" class="modal-overlay hidden">
-        <div class="modal-content animated-border">
-            <i id="closeModal" class="ri-close-line modal-close"></i>
-            <h2>NFT Preview</h2>
-            <img id="previewImage" src="" alt="NFT Preview Image">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span>NFT Preview</span>
+                <button id="closeModal" class="modal-close-btn"><i class="ri-close-line"></i></button>
+            </div>
+
+            <!-- Modal Body (Chứa cả ảnh và thông tin overlay) -->
+            <div class="modal-body">
+                <img id="previewImage" src="" alt="NFT Preview Image">
+                
+                <!-- Thông tin Traits Overlay -->
+                <div class="overlay-footer">
+                    <div class="detail-item">
+                        <span>Độ hiếm</span>
+                        <strong id="previewRarity">—</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Nhân vật</span>
+                        <strong id="previewCharacter" class="mono">—</strong>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

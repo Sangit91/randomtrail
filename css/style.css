@@ -1,5 +1,5 @@
 /* ===================================================================== */
-/* === STYLE.CSS - PHIÊN BẢN SỬA LỖI & CẢI TIẾN GIAO DIỆN === */
+/* === STYLE.CSS === */
 /* ===================================================================== */
 
 :root {
@@ -16,6 +16,13 @@
     --radius-lg: 16px;
     --radius-md: 10px;
     --shadow-glow: 0 0 40px rgba(88, 166, 255, 0.15);
+}
+
+/* Đăng ký một custom property để animation viền chạy mượt mà hơn (Houdini) */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
 }
 
 * {
@@ -93,12 +100,12 @@ header {
     font-weight: 700;
     display: inline-flex;
     align-items: center;
-    justify-content: center; /* Thêm để căn giữa icon khi chỉ có icon */
+    justify-content: center;
     gap: 8px;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
-    white-space: nowrap; /* Ngăn text trên nút bị xuống dòng */
+    white-space: nowrap;
 }
 
 .btn:hover {
@@ -126,7 +133,7 @@ header {
 }
 
 
-/* --- MAIN LAYOUT & CARDS (PHẦN SỬA LỖI) --- */
+/* --- MAIN LAYOUT & CARDS --- */
 main {
     padding-top: 40px;
     padding-bottom: 40px;
@@ -134,19 +141,17 @@ main {
 
 .grid {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr; /* Bố cục 2 cột với tỉ lệ */
+    grid-template-columns: 1.2fr 0.8fr;
     gap: 24px;
 }
 
-/* SỬA LỖI QUAN TRỌNG: Ngăn nội dung bên trong card làm vỡ layout grid */
 .grid > .card {
     min-width: 0;
 }
 
-/* Bố cục responsive: chuyển thành 1 cột trên màn hình nhỏ */
 @media (max-width: 900px) {
     .grid {
-        grid-template-columns: 1fr; /* Chỉ 1 cột */
+        grid-template-columns: 1fr;
     }
 }
 
@@ -156,16 +161,15 @@ main {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-glow);
     padding: 24px 28px;
-    /* Thêm flexbox để quản lý layout bên trong card dễ hơn */
     display: flex;
     flex-direction: column;
-    gap: 16px; /* Khoảng cách mặc định giữa các phần tử con */
+    gap: 16px;
 }
 
 /* --- TYPOGRAPHY & CONTENT --- */
 h1 {
     font-size: 32px;
-    margin: 0; /* Xóa margin mặc định */
+    margin: 0;
     font-weight: 700;
     line-height: 1.2;
 }
@@ -181,7 +185,7 @@ h1 {
 .sub {
     color: var(--muted);
     font-size: 15px;
-    max-width: 100%; /* Sửa để không bị tràn */
+    max-width: 100%;
     margin: 0;
 }
 
@@ -189,7 +193,7 @@ h1 {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin: 0; /* Xóa margin mặc định */
+    margin: 0;
 }
 
 .chip {
@@ -223,7 +227,7 @@ h1 {
 
 .row {
     display: flex;
-    flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ chỗ */
+    flex-wrap: wrap;
     align-items: center;
     gap: 12px;
     justify-content: space-between;
@@ -233,7 +237,7 @@ h1 {
 .col {
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Giảm gap để nhất quán */
+    gap: 12px;
 }
 
 .hidden {
@@ -326,16 +330,27 @@ h1 {
     color: var(--accent-red);
 }
 
+/* --- HIỆU ỨNG VIỀN GRADIENT TĨNH CHO KHUNG KẾT QUẢ --- */
+#result.out {
+    border: 2px solid transparent;
+    background: linear-gradient(var(--bg-light), var(--bg-light)) padding-box,
+                linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) border-box;
+    border-radius: var(--radius-md);
+}
 
-/* --- MODAL PREVIEW STYLING --- */
+/* ===================================================================== */
+/* === MODAL PREVIEW STYLING (PHIÊN BẢN ĐẲNG CẤP - HIGH-END) === */
+/* ===================================================================== */
+
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(13, 17, 23, 0.8);
-    backdrop-filter: blur(8px);
+    background: rgba(13, 17, 23, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -344,53 +359,126 @@ h1 {
     animation: fadeIn 0.3s forwards;
 }
 
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
+@keyframes fadeIn { to { opacity: 1; } }
 
 .modal-content {
-    background: var(--card);
-    padding: 30px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
-    position: relative;
-    text-align: center;
-    transform: scale(0.95);
-    animation: scaleIn 0.3s forwards;
-}
-@keyframes scaleIn {
-    to { transform: scale(1); }
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-}
-
-#previewImage {
+    width: 480px;
     max-width: 90vw;
-    max-height: 80vh;
-    width: auto;
-    height: auto;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    
+    /* HIỆU ỨNG VIỀN CHẠY HIỆU NĂNG CAO */
+    border: 3px solid;
+    border-image: conic-gradient(from var(--angle), 
+                                  var(--card), 
+                                  var(--accent-purple), 
+                                  var(--accent-blue), 
+                                  var(--accent-purple), 
+                                  var(--card)) 1;
+    animation: border-spin 4s linear infinite;
 }
 
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 28px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: color 0.2s;
+@keyframes border-spin {
+    to { --angle: 360deg; }
 }
 
-.modal-close:hover {
+/* --- Modal Header --- */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header span {
+    font-size: 16px;
+    font-weight: 600;
     color: var(--text);
 }
 
+.modal-close-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 22px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+}
+
+/* --- Modal Body & Image --- */
+.modal-body {
+    padding: 8px;
+    position: relative;
+    overflow: hidden;
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+}
+
+#previewImage {
+    width: 100%;
+    height: auto;
+    border-radius: calc(var(--radius-md) - 2px);
+    display: block;
+}
+
+/* --- Overlay Footer --- */
+.overlay-footer {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: space-around;
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom-left-radius: calc(var(--radius-md) - 2px);
+    border-bottom-right-radius: calc(var(--radius-md) - 2px);
+}
+
+.detail-item {
+    text-align: center;
+}
+
+.detail-item span {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item strong {
+    display: block;
+    font-size: 16px;
+    color: var(--text);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* --- MÀU SẮC CHO CÁC CẤP ĐỘ HIẾM --- */
+.rarity-common { color: var(--text) !important; }
+.rarity-uncommon { color: var(--accent-green) !important; }
+.rarity-rare { color: var(--accent-blue) !important; }
+.rarity-epic { color: var(--accent-purple) !important; }
+.rarity-legendary { color: #ffaf00 !important; }
 
 /* --- SITE FOOTER --- */
 .site-footer {
@@ -424,125 +512,4 @@ hr {
     background-color: var(--border);
     margin: 24px 0;
     width: 100%;
-}
-
-/* ===================================================================== */
-/* === HIỆU ỨNG VIỀN ÁNH SÁNG CHO MODAL PREVIEW === */
-/* ===================================================================== */
-
-/* 
-   Thêm class 'animated-border' vào thẻ <div class="modal-content">
-   trong file index.html để kích hoạt hiệu ứng này.
-*/
-
-.animated-border {
-    position: relative;
-    overflow: hidden; /* Quan trọng: để che giấu phần thừa của pseudo-element */
-}
-
-/* 
-   Tạo một pseudo-element ::before để làm lớp nền gradient.
-   Nó sẽ lớn hơn một chút so với card và quay liên tục.
-*/
-.animated-border::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200%; /* Lớn hơn card để hiệu ứng gradient mượt mà khi quay */
-    height: 200%;
-    background: conic-gradient(
-        transparent 270deg,
-        var(--accent-purple),
-        var(--accent-blue)
-    );
-    
-    /* Animation để quay lớp gradient */
-    animation: rotate-border 4s linear infinite;
-}
-
-/* 
-   Tạo một pseudo-element ::after để che đi phần giữa,
-   chỉ để lại phần viền. Nó sẽ có màu nền của card.
-*/
-.animated-border::after {
-    content: '';
-    position: absolute;
-    top: 2px; /* Khoảng cách này tạo ra độ dày của viền */
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    background: var(--card); /* Màu nền phải giống màu của modal-content */
-    border-radius: var(--radius-lg); /* Bo góc giống hệt modal-content */
-    z-index: 1; /* Đảm bảo nó nằm trên lớp gradient quay */
-}
-
-/* 
-   Đảm bảo nội dung thực của modal (h2, img, nút close) 
-   luôn nằm trên cả hai lớp pseudo-element.
-*/
-.modal-content > * {
-    position: relative;
-    z-index: 2;
-}
-
-/* Định nghĩa animation quay */
-@keyframes rotate-border {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
-}
-
-
-
-/* ===================================================================== */
-/* === HIỆU ỨNG VIỀN ÁNH SÁNG CHO KHUNG KẾT QUẢ (RESULT BOX) === */
-/* ===================================================================== */
-
-/* Ghi đè lại class .out để chuẩn bị cho hiệu ứng trên #result */
-#result.out {
-    position: relative; /* Bắt buộc để định vị các lớp hiệu ứng */
-    overflow: hidden;   /* Bắt buộc để che phần gradient thừa */
-    border: 1px solid transparent; /* Ẩn viền cũ đi nhưng vẫn giữ layout */
-    /* Tăng nhẹ padding để nội dung không bị quá sát viền hiệu ứng */
-    padding: 18px; 
-}
-
-/* Lớp tạo hiệu ứng ánh sáng quay */
-#result.out::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 250%; 
-    height: 250%;
-    background: conic-gradient(
-        transparent 270deg,
-        var(--accent-blue),
-        var(--accent-purple)
-    );
-    animation: rotate-border 4s linear infinite;
-}
-    
-/* Lớp che bên trong để tạo ra dải viền */
-#result.out::after {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    top: 2px; /* Độ dày của viền là 2px */
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    background: var(--bg-light); /* Màu nền của khung .out */
-    border-radius: calc(var(--radius-md) - 2px); /* Bo góc bên trong, nhỏ hơn 1 chút */
-}
-
-/* Đảm bảo nội dung (text, ảnh) của #result nằm trên cùng */
-#result.out > * {
-    position: relative;
-    z-index: 2;
 }
