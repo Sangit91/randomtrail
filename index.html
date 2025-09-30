@@ -13,9 +13,9 @@
     <header>
         <div class="wrap nav">
             <div class="brand"><i class="ri-shining-2-fill"></i> Lucky Traits on ZenChain - Tuvan</div>
-            <div class="row">
-                <button id="connect" class="btn"><i class="ri-wallet-3-line"></i><span>Connect Wallet</span></button>
-            </div>
+            
+            <!-- Nút button giờ là con trực tiếp của div.nav -->
+            <button id="connect" class="btn"><i class="ri-wallet-3-line"></i><span>Connect Wallet</span></button>
         </div>
     </header>
 
@@ -24,7 +24,8 @@
             <!-- Left: dApp -->
             <section class="card">
                 <div class="row">
-                    <h1>NFT Trait Generator</h1>
+                   
+                    <h1 class="title-gradient">NFT Trait Generator</h1>
                     <!-- SỬA LỖI: Đảm bảo có span id="status" -->
                     <span id="status" class="badge"><i class="ri-blaze-line"></i><span>Wallet: Not connected</span></span>
                 </div>
@@ -82,7 +83,7 @@
     </main>
     
     <div id="previewModal" class="modal-overlay hidden">
-        <div class="modal-content">
+        <div class="modal-content animated-border">
             <i id="closeModal" class="ri-close-line modal-close"></i>
             <h2>NFT Preview</h2>
             <img id="previewImage" src="" alt="NFT Preview Image">
