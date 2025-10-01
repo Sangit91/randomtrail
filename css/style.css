@@ -330,12 +330,26 @@ h1 {
     color: var(--accent-red);
 }
 
-/* --- HIỆU ỨNG VIỀN GRADIENT TĨNH CHO KHUNG KẾT QUẢ --- */
+/* === HIỆU ỨNG VIỀN CHẠY CHO KHUNG KẾT QUẢ (NÂNG CẤP) === */
+/* ===================================================================== */
+
 #result.out {
-    border: 2px solid transparent;
-    background: linear-gradient(var(--bg-light), var(--bg-light)) padding-box,
-                linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) border-box;
+    /* Giữ lại các thuộc tính cơ bản */
+    background: var(--bg-light);
     border-radius: var(--radius-md);
+    padding: 16px;
+    word-break: break-all;
+    transition: all 0.2s ease;
+    
+    /* ÁP DỤNG HIỆU ỨNG VIỀN CHẠY MỚI */
+    border: 3px solid; /* Độ dày viền */
+    border-image: conic-gradient(from var(--angle),
+                                  var(--bg-light), /* <<< Quan trọng: Khớp với màu nền */
+                                  var(--accent-purple),
+                                  var(--accent-blue),
+                                  var(--accent-purple),
+                                  var(--bg-light)) 1; /* <<< Quan trọng */
+    animation: border-spin 4s linear infinite;
 }
 
 /* ===================================================================== */
