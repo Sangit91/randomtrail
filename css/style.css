@@ -1,5 +1,5 @@
 /* ===================================================================== */
-/* === STYLE.CSS === */
+/* === STYLE.CSS (PHIÊN BẢN HOÀN CHỈNH ĐÃ SỬA LỖI) === */
 /* ===================================================================== */
 
 :root {
@@ -18,21 +18,15 @@
     --shadow-glow: 0 0 40px rgba(88, 166, 255, 0.15);
 }
 
-/* Đăng ký một custom property để animation viền chạy mượt mà hơn (Houdini) */
 @property --angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
-    height: 100%;
-}
+html, body { height: 100%; }
 
 body {
     margin: 0;
@@ -42,130 +36,60 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-a {
-    color: var(--accent-blue);
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-}
+a { color: var(--accent-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-.wrap {
-    max-width: 1024px;
-    margin: 0 auto;
-    padding: 24px;
-}
+.wrap { max-width: 1024px; margin: 0 auto; padding: 24px; }
 
 /* --- HEADER --- */
 header {
-    position: sticky;
-    top: 0;
+    position: sticky; top: 0;
     backdrop-filter: saturate(150%) blur(10px);
     background: rgba(13, 17, 23, 0.7);
     border-bottom: 1px solid var(--border);
     z-index: 10;
 }
 
-.nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-}
-
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 
 .brand {
     font-family: 'Poppins', sans-serif;
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Tăng khoảng cách một chút */
-    font-weight: 700; /* Chữ đậm hơn */
-    font-size: 22px; /* Chữ to hơn */
-    letter-spacing: .5px; /* Giãn cách chữ nhẹ */
-
-    /* Hiệu ứng Gradient cho chữ */
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 700; font-size: 22px; letter-spacing: .5px;
     background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    
-    /* Hiệu ứng phát sáng (Glow) */
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
 }
 
 .brand i {
-    font-size: 28px; /* Icon to hơn */
-    
-    /* Đảm bảo icon cũng có gradient và hiệu ứng */
+    font-size: 28px;
     background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 
 /* --- BUTTONS --- */
 .btn {
-    appearance: none;
-    border: 0;
-    border-radius: 999px;
-    padding: 12px 20px;
-    color: #fff;
+    appearance: none; border: 0; border-radius: 999px;
+    padding: 12px 20px; color: #fff;
     background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
     font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
     white-space: nowrap;
 }
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-.btn.ghost {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-    box-shadow: none;
-}
-
-.btn.ghost:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
-}
-
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+.btn.ghost:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.15); }
+.btn:active { transform: translateY(0) scale(0.98); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); }
 
 /* --- MAIN LAYOUT & CARDS --- */
-main {
-    padding-top: 40px;
-    padding-bottom: 40px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 24px;
-}
-
-.grid > .card {
-    min-width: 0;
-}
-
-@media (max-width: 900px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-}
+main { padding-top: 40px; padding-bottom: 40px; }
+.grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; }
+.grid > .card { min-width: 0; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
 .card {
     background: radial-gradient(1000px 300px at 50% -50px, rgba(88, 166, 255, .1), transparent 80%), var(--card);
@@ -173,374 +97,93 @@ main {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-glow);
     padding: 24px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: flex; flex-direction: column; gap: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.card:hover { transform: translateY(-5px); box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2), var(--shadow-glow); }
 
 /* --- TYPOGRAPHY & CONTENT --- */
-h1 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 32px;
-    margin: 0;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.title-gradient {
-    font-family: 'Poppins', sans-serif;
-    font-size: 28px;
-    background: linear-gradient(90deg, #f7b733, #fc4a1a);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-
-.sub {
-    color: var(--muted);
-    font-size: 15px;
-    max-width: 100%;
-    margin: 0;
-}
-
-.panel {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin: 0;
-}
-
-.chip {
-    border: 1px solid var(--border);
-    padding: 8px 14px;
-    border-radius: 999px;
-    color: var(--muted);
-    font-size: 13px;
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.out {
-    background: var(--bg-light);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    word-break: break-all;
-    transition: all 0.2s ease;
-}
-
-.muted {
-    color: var(--muted);
-    font-size: 14px;
-}
-
-.mono {
-    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
-    font-size: 14px;
-    color: #a5d6ff;
-}
-
-.row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.col {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.hidden {
-    display: none !important;
-}
+h1, .title-gradient { font-family: 'Poppins', sans-serif; }
+h1 { font-size: 32px; margin: 0; font-weight: 700; line-height: 1.2; }
+.title-gradient { font-size: 28px; background: linear-gradient(90deg, #f7b733, #fc4a1a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.sub { color: var(--muted); font-size: 15px; max-width: 100%; margin: 0; }
+.panel { display: flex; gap: 12px; flex-wrap: wrap; margin: 0; }
+.chip { border: 1px solid var(--border); padding: 8px 14px; border-radius: 999px; color: var(--muted); font-size: 13px; background: rgba(255, 255, 255, 0.03); }
+.out { background: var(--bg-light); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; word-break: break-all; transition: all 0.2s ease; }
+.muted { color: var(--muted); font-size: 14px; }
+.mono { font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace; font-size: 14px; color: #a5d6ff; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; width: 100%; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.hidden { display: none !important; }
 
 /* --- UI ELEMENTS & STATUS --- */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: rgba(163, 123, 255, .1);
-    border: 1px solid rgba(163, 123, 255, .2);
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-}
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(163, 123, 255, .1); border: 1px solid rgba(163, 123, 255, .2); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.badge i { color: var(--accent-purple); }
+#imageCanvas { background: var(--bg-light); border-radius: var(--radius-md); border: 1px dashed var(--border); max-width: 100%; height: auto; }
+#result { transition: all 0.3s ease-in-out; }
 
-.badge i {
-    color: var(--accent-purple);
-}
-
-#imageCanvas {
-    background: var(--bg-light);
-    border-radius: var(--radius-md);
-    border: 1px dashed var(--border);
-    max-width: 100%;
-    height: auto;
-}
-
-#result {
-    transition: all 0.3s ease-in-out;
-}
-
-/* --- ANIMATIONS --- */
-.spin {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* --- NFT COLLECTION STYLING --- */
-#mintsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-#mintsContainer .muted {
-    width: 100%;
-    text-align: center;
-    padding: 20px 0;
-}
-
-/* css/style.css */
-
-/* ===================================================================== */
-/* === HIỆU ỨNG XUẤT HIỆN NỐI TIẾP CHO NFT (PHIÊN BẢN HOÀN CHỈNH) === */
-/* ===================================================================== */
-
-/* 1. Style NỀN TẢNG cho tất cả các item trong lưới */
-.nft-item, .nft-placeholder, .nft-error {
-    /* Các thuộc tính layout và style cũ của bạn được giữ lại */
-    width: 80px;
-    height: 80px;
-    border-radius: var(--radius-md);
-    background: var(--bg-light);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: var(--muted);
-    flex-shrink: 0;
-    
-    /* --- PHẦN HIỆU ỨNG MỚI --- */
-
-    /* a. Trạng thái "ẩn" mặc định */
-    opacity: 0;
-    transform: translateY(15px);
-
-    /* b. Định nghĩa hiệu ứng chuyển động mượt mà cho TẤT CẢ các thuộc tính cần thiết */
-    transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    transition-delay: 0s; /* Độ trễ mặc định là 0 */
-}
-
-/* 2. Class để KÍCH HOẠT trạng thái "hiện" */
-.nft-item.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* 3. Style cho thẻ IMG bên trong (giữ nguyên) */
-.nft-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: var(--radius-md);
-    transition: transform 0.2s ease-in-out;
-}
-
-/* 4. Hiệu ứng Hover (giữ nguyên) */
-.nft-item img:hover {
-    transform: scale(1.08);
-}
-
-/* 5. Style cho trạng thái lỗi (giữ nguyên) */
-.nft-error {
-    background-color: rgba(248, 81, 73, 0.1);
-    border-color: rgba(248, 81, 73, 0.3);
-    color: var(--accent-red);
-}
-
-/* 6. Style cho hiệu ứng overlay tên (nếu bạn đã thêm trước đó) */
-.nft-item {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.nft-item::after {
-    content: attr(data-title);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 12px 6px 6px;
-    font-size: 11px;
-    font-family: 'Inter', sans-serif;
-    color: #fff;
-    text-align: center;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    opacity: 0;
-    transform: translateY(100%);
-    transition: all 0.3s ease;
-}
-
-.nft-item:hover::after {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* --- HIỆU ỨNG VIỀN GRADIENT TĨNH CHO KHUNG KẾT QUẢ --- */
+/* --- HIỆU ỨNG VIỀN CHẠY CHO KHUNG KẾT QUẢ (GIỮ LẠI PHIÊN BẢN NÀY) --- */
 #result.out {
-    border: 2px solid transparent;
-    background: linear-gradient(var(--bg-light), var(--bg-light)) padding-box,
-                linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) border-box;
-    border-radius: var(--radius-md);
-}
-
-/* ===================================================================== */
-/* === MODAL PREVIEW STYLING (PHIÊN BẢN ĐẲNG CẤP - HIGH-END) === */
-/* ===================================================================== */
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(13, 17, 23, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeIn 0.3s forwards;
-}
-
-@keyframes fadeIn { to { opacity: 1; } }
-
-.modal-content {
-    width: 480px;
-    max-width: 90vw;
-    background: var(--card);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    
-    /* HIỆU ỨNG VIỀN CHẠY HIỆU NĂNG CAO */
     border: 3px solid;
-    border-image: conic-gradient(from var(--angle), 
-                                  var(--card), 
-                                  var(--accent-purple), 
-                                  var(--accent-blue), 
-                                  var(--accent-purple), 
-                                  var(--card)) 1;
+    border-image: conic-gradient(from var(--angle), var(--bg-light), var(--accent-purple), var(--accent-blue), var(--accent-purple), var(--bg-light)) 1;
     animation: border-spin 4s linear infinite;
 }
 
-@keyframes border-spin {
-    to { --angle: 360deg; }
-}
+/* --- ANIMATIONS --- */
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes border-spin { to { --angle: 360deg; } }
+@keyframes fadeIn { to { opacity: 1; } }
 
-/* --- Modal Header --- */
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
+/* --- NFT COLLECTION STYLING (ĐÃ GỘP VÀ SỬA LỖI) --- */
+.nft-item, .nft-placeholder, .nft-error {
+    width: 80px; height: 80px;
+    border-radius: var(--radius-md);
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--muted);
+    flex-shrink: 0; position: relative;
+    overflow: hidden; cursor: pointer;
+    opacity: 0; transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition-delay: 0s;
 }
+.nft-item.is-visible { opacity: 1; transform: translateY(0); }
+.nft-item img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md); transition: transform 0.2s ease-in-out; }
+.nft-item img:hover { transform: scale(1.08); }
+.nft-error { background-color: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.3); color: var(--accent-red); }
+.nft-item::after {
+    content: attr(data-title);
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; padding: 12px 6px 6px;
+    font-size: 11px; font-family: 'Inter', sans-serif;
+    color: #fff; text-align: center;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    opacity: 0; transform: translateY(100%);
+    transition: all 0.3s ease;
+}
+.nft-item:hover::after { opacity: 1; transform: translateY(0); }
 
-.modal-header span {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-}
-
-.modal-close-btn {
-    appearance: none;
-    border: 0;
-    background: transparent;
-    color: var(--muted);
-    font-size: 22px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.modal-close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text);
-}
-
-/* --- Modal Body & Image --- */
-.modal-body {
-    padding: 8px;
-    position: relative;
-    overflow: hidden;
-    border-bottom-left-radius: var(--radius-lg);
-    border-bottom-right-radius: var(--radius-lg);
-}
-
-#previewImage {
-    width: 100%;
-    height: auto;
-    border-radius: calc(var(--radius-md) - 2px);
-    display: block;
-}
-
-/* --- Overlay Footer --- */
-.overlay-footer {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
-    display: flex;
-    justify-content: space-around;
-    padding: 16px 20px;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom-left-radius: calc(var(--radius-md) - 2px);
-    border-bottom-right-radius: calc(var(--radius-md) - 2px);
-}
-
-.detail-item {
-    text-align: center;
-}
-
-.detail-item span {
-    display: block;
-    font-size: 12px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.detail-item strong {
-    display: block;
-    font-size: 16px;
-    color: var(--text);
-    margin-top: 4px;
-    font-weight: 600;
-}
+/* --- MODAL STYLING --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 17, 23, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; animation: fadeIn 0.3s forwards; }
+.modal-content { width: 480px; max-width: 90vw; background: var(--card); border-radius: var(--radius-lg); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; border: 3px solid; border-image: conic-gradient(from var(--angle), var(--card), var(--accent-purple), var(--accent-blue), var(--accent-purple), var(--card)) 1; animation: border-spin 4s linear infinite; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.modal-header span { font-size: 16px; font-weight: 600; color: var(--text); }
+.modal-close-btn { appearance: none; border: 0; background: transparent; color: var(--muted); font-size: 22px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; }
+.modal-close-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text); }
+.modal-body { padding: 8px; position: relative; overflow: hidden; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
+#previewImage { width: 100%; height: auto; border-radius: calc(var(--radius-md) - 2px); display: block; }
+.overlay-footer { position: absolute; bottom: 8px; left: 8px; right: 8px; display: flex; justify-content: space-around; padding: 16px 20px; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-top: 1px solid rgba(255, 255, 255, 0.1); border-bottom-left-radius: calc(var(--radius-md) - 2px); border-bottom-right-radius: calc(var(--radius-md) - 2px); }
+.detail-item { text-align: center; }
+.detail-item span { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.detail-item strong { display: block; font-size: 16px; color: var(--text); margin-top: 4px; font-weight: 600; }
+.modal-body-details { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+#detailImage { width: 100%; border-radius: var(--radius-md); background-color: var(--bg-light); }
+.attributes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.attribute-item { background: var(--bg-light); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; text-align: center; }
+.attribute-item .type { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.attribute-item .value { display: block; font-size: 14px; font-weight: 600; color: var(--text); }
 
 /* --- MÀU SẮC CHO CÁC CẤP ĐỘ HIẾM --- */
 .rarity-common { color: var(--text) !important; }
@@ -549,404 +192,45 @@ h1 {
 .rarity-epic { color: var(--accent-purple) !important; }
 .rarity-legendary { color: #ffaf00 !important; }
 
+/* --- SITE FOOTER & HR --- */
+.site-footer { border-top: 1px solid var(--border); padding: 40px 0; margin-top: 40px; text-align: center; color: var(--muted); }
+.site-footer p { margin: 5px 0; font-size: 14px; }
+.creator-name { font-weight: 600; background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.sub-footer { font-size: 12px; opacity: 0.7; }
+hr { border: none; height: 1px; background-color: var(--border); margin: 24px 0; width: 100%; }
 
-
-
-/* --- CSS CHO MODAL CHI TIẾT NFT --- */
-.modal-body-details {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-#detailImage {
-    width: 100%;
-    border-radius: var(--radius-md);
-    background-color: var(--bg-light);
-}
-
-.attributes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-}
-
-.attribute-item {
-    background: var(--bg-light);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 12px;
-    text-align: center;
-}
-
-.attribute-item .type {
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-}
-
-.attribute-item .value {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-}
-
-/* --- SITE FOOTER --- */
-.site-footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 0;
-    margin-top: 40px;
-    text-align: center;
-    color: var(--muted);
-}
-
-.site-footer p {
-    margin: 5px 0;
-    font-size: 14px;
-}
-
-.creator-name {
-    font-weight: 600;
-    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.sub-footer {
-    font-size: 12px;
-    opacity: 0.7;
-}
-
-hr {
-    border: none;
-    height: 1px;
-    background-color: var(--border);
-    margin: 24px 0;
-    width: 100%;
-}
-
-
-/* --- CSS CHO BỘ LỌC --- */
-.filter-select {
-    background: var(--bg-light);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 8px 12px;
-    font-family: inherit;
-    font-size: 14px;
-}
-
-/* ===================================================================== */
-/* === HIỆU ỨNG XUẤT HIỆN (ENTRANCE ANIMATIONS) === */
-/* ===================================================================== */
-
-@keyframes fadeInUp {
-    /* Trạng thái bắt đầu của hiệu ứng */
-    from {
-        opacity: 0;
-        transform: translateY(20px); /* Bắt đầu từ vị trí thấp hơn 20px */
-    }
-
-    /* Trạng thái kết thúc của hiệu ứng */
-    to {
-        opacity: 1;
-        transform: translateY(0); /* Trở về vị trí ban đầu */
-    }
-}
-
-/* Lớp CSS chính để áp dụng animation */
-.animate-on-load {
-    /* Gọi animation đã định nghĩa ở trên */
-    animation-name: fadeInUp;
-
-    /* Thời gian diễn ra animation */
-    animation-duration: 0.6s;
-
-    /* Giữ lại trạng thái cuối cùng của animation */
-    animation-fill-mode: backwards; 
-    /* 'backwards' rất quan trọng: nó áp dụng trạng thái 'from' (opacity: 0) ngay lập tức,
-       trước khi animation bắt đầu, giúp phần tử bị ẩn đi lúc đầu */
-
-    /* Kiểu chuyển động (bắt đầu nhanh, kết thúc chậm) cho mượt mà */
-    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Các lớp tiện ích để tạo hiệu ứng nối tiếp (staggering) */
+/* --- ENTRANCE ANIMATIONS --- */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.animate-on-load { animation-name: fadeInUp; animation-duration: 0.6s; animation-fill-mode: backwards; animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 .delay-1 { animation-delay: 0.2s; }
 .delay-2 { animation-delay: 0.4s; }
 .delay-3 { animation-delay: 0.6s; }
 .delay-4 { animation-delay: 0.8s; }
 
-.btn:active {
-    transform: translateY(0) scale(0.98); /* Hơi thu nhỏ nút lại khi nhấn */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Giảm bóng đổ */
-}
+/* --- ROLL & PREVIEW ANIMATIONS --- */
+@keyframes roll-reveal { 0% { transform: scale(0.8) rotate(-5deg); opacity: 0; } 80% { transform: scale(1.05) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+#result.is-rolling { animation: roll-reveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+#resultImage { max-width: 100px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0; transform: scale(0.9); transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+#resultImage.is-visible { opacity: 1; transform: scale(1); }
 
+/* --- TRỰC QUAN HÓA ĐỘ HIẾM (VIỀN MÀU) --- */
+.nft-item.rarity-common { border: 2px solid var(--border); }
+#result.rarity-uncommon, .nft-item.rarity-uncommon { border: 3px solid var(--accent-green); border-image: none; }
+#result.rarity-rare, .nft-item.rarity-rare { border: 3px solid var(--accent-blue); border-image: none; }
+#result.rarity-epic, .nft-item.rarity-epic { border: 3px solid var(--accent-purple); border-image: none; box-shadow: 0 0 12px rgba(163, 123, 255, 0.7); }
+#result.rarity-legendary, .nft-item.rarity-legendary { border: 3px solid #ffaf00; border-image: none; box-shadow: 0 0 15px rgba(255, 175, 0, 0.8); }
 
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Thêm transition cho mượt */
-    /* ... các thuộc tính cũ ... */
-}
-
-.card:hover {
-    transform: translateY(-5px); /* Nhấc card lên một chút */
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2), var(--shadow-glow); /* Tăng bóng đổ cho nổi bật */
-}
-
-/* Áp dụng cho các nút refresh */
-#viewMints:hover i, #refreshGlobal:hover i {
-    transition: transform 0.5s ease;
-    transform: rotate(360deg); /* Xoay 1 vòng */
-}
-
-
-/* Áp dụng style cho chính khung .nft-item, không phải thẻ img bên trong */
-.nft-item.rarity-common {
-    border: 2px solid var(--border);
-}
-
-/* --- Uncommon --- */
-.nft-item.rarity-uncommon,
-#result.rarity-uncommon {
-  border: 3px solid var(--accent-green);
-  border-image: none; /* Rất quan trọng: Reset lại border gradient mặc định của #result */
-}
-
-/* --- Rare --- */
-.nft-item.rarity-rare,
-#result.rarity-rare {
-  border: 3px solid var(--accent-blue);
-  border-image: none;
-}
-
-/* --- Epic --- */
-.nft-item.rarity-epic,
-#result.rarity-epic {
-  border: 3px solid var(--accent-purple);
-  border-image: none;
-  box-shadow: 0 0 12px rgba(163, 123, 255, 0.7);
-}
-
-/* --- Legendary --- */
-.nft-item.rarity-legendary,
-#result.rarity-legendary {
-  border: 3px solid #ffaf00;
-  border-image: none;
-  box-shadow: 0 0 15px rgba(255, 175, 0, 0.8);
-}
-
-/* ===================================================================== */
-/* === HIỆU ỨNG KHI ROLL TRAITS === */
-/* ===================================================================== */
-
-@keyframes roll-reveal {
-    0% {
-      transform: scale(0.8) rotate(-5deg);
-      opacity: 0;
-    }
-    80% {
-      transform: scale(1.05) rotate(2deg);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1) rotate(0);
-      opacity: 1;
-    }
-  }
-  
-  /* Class để kích hoạt animation */
-  #result.is-rolling {
-    animation: roll-reveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  }
-
-/* ===================================================================== */
-/* === HIỆU ỨNG XUẤT HIỆN MƯỢT MÀ CHO NFT PREVIEW === */
-/* ===================================================================== */
-
-#resultImage {
-    /* Các thuộc tính style cũ */
-    max-width: 100px;
-    border-radius: 8px;
-    margin-top: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-     
-    /* 1. Trạng thái "ẩn" mặc định */
-    opacity: 0;
-    transform: scale(0.9); /* Hơi nhỏ lại một chút */
-
-    /* 2. Định nghĩa hiệu ứng chuyển động */
-    transition: opacity 0.1s ease-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* 3. Class để kích hoạt trạng thái "hiện" */
-#resultImage.is-visible {
-    opacity: 1;
-    transform: scale(1); /* Trở về kích thước bình thường */
-}
-
-
-/* ===================================================================== */
-/* === GIAO DIỆN NÂNG CẤP CHO GLOBAL COLLECTION === */
-/* ===================================================================== */
-
-/* 1. Header & Control Panel */
-.collection-header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-}
-
-.title-group {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-}
-
-.collection-stats {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.controls-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* 2. Custom Dropdown Filter (Rất quan trọng cho thẩm mỹ) */
-.filter-wrapper {
-    position: relative;
-}
-
-.filter-select {
-    -webkit-appearance: none; /* Bỏ giao diện mặc định trên Chrome/Safari */
-    -moz-appearance: none; /* Bỏ giao diện mặc định trên Firefox */
-    appearance: none;
-    background-color: var(--bg-light);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 8px 32px 8px 12px; /* Chừa không gian cho icon mũi tên */
-    font-family: inherit;
-    font-size: 14px;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-}
-
-.filter-select:hover {
-    border-color: var(--accent-blue);
-}
-
-/* Thêm icon mũi tên tùy chỉnh */
-.filter-wrapper::after {
-    content: '\EA6D'; /* Mã icon mũi tên xuống của Remix Icon */
-    font-family: 'remixicon' !important;
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    font-size: 16px;
-    color: var(--muted);
-    pointer-events: none; /* Để có thể click xuyên qua */
-}
-
-
-/* 3. NFT Grid Layout */
-.nft-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 16px;
-    padding-top: 20px;
-
-    /* --- PHẦN SỬA LỖI QUAN TRỌNG --- */
-    
-    /* a. Đặt chiều cao tối thiểu để container không bao giờ bị co lại */
-    min-height: 200px; /* Bạn có thể điều chỉnh con số này */
-
-    /* b. Đảm bảo các NFT luôn bắt đầu từ trên xuống */
-    align-content: start;
-    
-    /* c. Thêm transition để nó có thể giãn ra mượt mà nếu có nhiều NFT */
-    transition: min-height 0.3s ease;
-}
-
-/* 4. Đánh bóng NFT Item với hiệu ứng Hover */
-.nft-item {
-    position: relative; /* Cần cho hiệu ứng overlay */
-    overflow: hidden; /* Giấu các phần thừa của overlay */
-}
-
-.nft-item::after {
-    content: attr(data-title); /* Lấy tên NFT từ attribute */
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 12px 6px 6px;
-    font-size: 11px;
-    font-family: 'Inter', sans-serif;
-    color: #fff;
-    text-align: center;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    
-    /* Hiệu ứng mặc định */
-    opacity: 0;
-    transform: translateY(100%);
-    transition: all 0.3s ease;
-}
-
-.nft-item:hover::after {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.nft-item img:hover {
-    transform: scale(1.05); /* Giữ hiệu ứng scale cũ */
-}
-
-/* Thêm vào cuối file style.css */
-
-.empty-state {
-    /* Cho phép chiếm toàn bộ chiều rộng của grid */
-    grid-column: 1 / -1;
-
-    /* Dùng flexbox để tự căn giữa nội dung theo chiều dọc */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
-    /* Quan trọng: Bắt nó chiếm toàn bộ chiều cao của cha nó */
-    height: 100%;
-    min-height: 160px; /* Đảm bảo nó có chiều cao tối thiểu ngay cả khi cha nó chưa render */
-
-    /* Style cũ */
-    padding: 20px;
-    text-align: center;
-    color: var(--muted);
-}
-
-.empty-state i {
-    font-size: 48px;
-    opacity: 0.3;
-}
-.empty-state span {
-    display: block;
-    font-weight: 600;
-    color: var(--text);
-    margin-top: 16px;
-}
-.empty-state p {
-    font-size: 14px;
-    margin-top: 4px;
-}
+/* --- GLOBAL COLLECTION NÂNG CẤP --- */
+.collection-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.title-group { display: flex; align-items: baseline; gap: 12px; }
+.collection-stats { font-size: 14px; font-weight: 600; }
+.controls-group { display: flex; align-items: center; gap: 12px; }
+.filter-wrapper { position: relative; }
+.filter-select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: var(--bg-light); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 32px 8px 12px; font-family: inherit; font-size: 14px; cursor: pointer; transition: border-color 0.2s ease; }
+.filter-select:hover { border-color: var(--accent-blue); }
+.filter-wrapper::after { content: '\EA6D'; font-family: 'remixicon' !important; position: absolute; top: 50%; right: 12px; transform: translateY(-50%); font-size: 16px; color: var(--muted); pointer-events: none; }
+.nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 16px; padding-top: 20px; min-height: 200px; align-content: start; transition: min-height 0.3s ease; }
+.empty-state { grid-column: 1 / -1; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 160px; padding: 20px; text-align: center; color: var(--muted); }
+.empty-state i { font-size: 48px; opacity: 0.3; }
+.empty-state span { display: block; font-weight: 600; color: var(--text); margin-top: 16px; }
+.empty-state p { font-size: 14px; margin-top: 4px; }
