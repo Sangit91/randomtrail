@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Lucky Traits — ZenChain Mini dApp</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
-    <header>
+    <header class="animate-on-load">
         <div class="wrap nav">
-            <div class="brand"><i class="ri-shining-2-fill"></i> Lucky Traits on ZenChain - Tuvan</div>
+            <div class="brand"><i class="ri-meteor-fill"></i> Lucky Traits on ZenChain - Tử Vận</div>
             
             <!-- Nút button giờ là con trực tiếp của div.nav -->
             <button id="connect" class="btn"><i class="ri-wallet-3-line"></i><span>Connect Wallet</span></button>
@@ -22,7 +25,7 @@
     <main class="wrap">
         <div class="grid">
             <!-- Left: dApp -->
-            <section class="card">
+            <section class="card animate-on-load delay-1">
                 <div class="row">
                    
                     <h1 class="title-gradient">NFT Trait Generator</h1>
@@ -57,7 +60,7 @@
             </section>
 
             <!-- Right: Wallet & NFT Collection -->
-            <aside class="card col">
+            <aside class="card col animate-on-load delay-2">
                 <div>
                     <div class="muted">Address</div>
                     <div id="addr" class="mono">—</div>
@@ -85,7 +88,7 @@
         <!-- ======================================================== -->
         <!-- === KHU VỰC BỘ SƯU TẬP TOÀN CẦU === -->
         <!-- ======================================================== -->
-        <section class="card" style="margin-top: 24px;">
+        <section class="card animate-on-load delay-3" style="margin-top: 24px;">
             <div class="row">
                 <h2 class="title-gradient" style="font-size: 24px;">Global Collection</h2>
                 <button id="refreshGlobal" class="btn ghost" style="padding: 6px 10px; font-size: 12px;">

@@ -73,17 +73,29 @@ header {
     gap: 16px;
 }
 
+
 .brand {
+    font-family: 'Poppins', sans-serif;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 18px;
-    letter-spacing: .2px;
+    gap: 12px; /* Tăng khoảng cách một chút */
+    font-weight: 700; /* Chữ đậm hơn */
+    font-size: 22px; /* Chữ to hơn */
+    letter-spacing: .5px; /* Giãn cách chữ nhẹ */
+
+    /* Hiệu ứng Gradient cho chữ */
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Hiệu ứng phát sáng (Glow) */
+    text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
 }
 
 .brand i {
-    font-size: 24px;
+    font-size: 28px; /* Icon to hơn */
+    
+    /* Đảm bảo icon cũng có gradient và hiệu ứng */
     background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -168,6 +180,7 @@ main {
 
 /* --- TYPOGRAPHY & CONTENT --- */
 h1 {
+    font-family: 'Poppins', sans-serif;
     font-size: 32px;
     margin: 0;
     font-weight: 700;
@@ -175,6 +188,7 @@ h1 {
 }
 
 .title-gradient {
+    font-family: 'Poppins', sans-serif;
     font-size: 28px;
     background: linear-gradient(90deg, #f7b733, #fc4a1a);
     -webkit-background-clip: text;
@@ -572,3 +586,44 @@ hr {
     font-family: inherit;
     font-size: 14px;
 }
+
+/* ===================================================================== */
+/* === HIỆU ỨNG XUẤT HIỆN (ENTRANCE ANIMATIONS) === */
+/* ===================================================================== */
+
+@keyframes fadeInUp {
+    /* Trạng thái bắt đầu của hiệu ứng */
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Bắt đầu từ vị trí thấp hơn 20px */
+    }
+
+    /* Trạng thái kết thúc của hiệu ứng */
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Trở về vị trí ban đầu */
+    }
+}
+
+/* Lớp CSS chính để áp dụng animation */
+.animate-on-load {
+    /* Gọi animation đã định nghĩa ở trên */
+    animation-name: fadeInUp;
+
+    /* Thời gian diễn ra animation */
+    animation-duration: 0.6s;
+
+    /* Giữ lại trạng thái cuối cùng của animation */
+    animation-fill-mode: backwards; 
+    /* 'backwards' rất quan trọng: nó áp dụng trạng thái 'from' (opacity: 0) ngay lập tức,
+       trước khi animation bắt đầu, giúp phần tử bị ẩn đi lúc đầu */
+
+    /* Kiểu chuyển động (bắt đầu nhanh, kết thúc chậm) cho mượt mà */
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Các lớp tiện ích để tạo hiệu ứng nối tiếp (staggering) */
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+.delay-4 { animation-delay: 0.8s; }
