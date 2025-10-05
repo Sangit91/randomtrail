@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewImage = $("previewImage");
     
     const shareBtn = $('shareBtn');
+    const collectionStats = $('collectionStats');
 
     // ==============================================================================
     // === CÁC THÔNG TIN CẤU HÌNH ====================================================
@@ -121,14 +122,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function rollTraits() {
         if (!address) return alert("Please connect your wallet first.");
-        
-        // --- CẢI TIẾN: Di chuyển phần kiểm tra manifest lên đầu ---
         if (typeof IMAGE_MANIFEST === 'undefined' || typeof TRAIT_ORDER === 'undefined') {
-            alert('Essential application files (image_manifest.js or trait_order.js) are missing. The app cannot function.');
-            console.error("CRITICAL: IMAGE_MANIFEST or TRAIT_ORDER is not defined.");
+            alert('Essential application files are missing.');
             return;
         }
-
+    
+        // --- Bắt đầu hiệu ứng ---
+        resEl.classList.remove('is-rolling');
+        void resEl.offsetWidth; 
+        resEl.classList.add('is-rolling');
+        
+        // **QUAN TRỌNG: Xóa các class độ hiếm cũ khỏi khung kết quả**
+        const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+        rarities.forEach(r => resEl.classList.remove(`rarity-${r}`));
+    
+        resultTextEl.textContent = "";
+        resultImageEl.classList.remove('is-visible');
+        // -------------------------
+    
         const seed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${address}:${chainId}:${Date.now()}`));
         
         currentTraits = {};
@@ -139,14 +150,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         currentTraits['rarity'] = pick(RARITY_WEIGHTS, ethers.utils.keccak256(ethers.utils.toUtf8Bytes(seed + 'r')));
-
-        resultTextEl.textContent = `Rolled a ${currentTraits.rarity} kit! Ready to mint.`;
+        
+        // **QUAN TRỌNG: Thêm class độ hiếm MỚI vào khung kết quả**
+        resEl.classList.add(`rarity-${currentTraits.rarity.toLowerCase()}`);
+    
+        resultTextEl.innerHTML = `Rolled a <strong class="rarity-${currentTraits.rarity.toLowerCase()}">${currentTraits.rarity}</strong> kit! Ready to mint.`;
         generateAndDisplayImage(currentTraits);
         mintBtn.classList.remove('hidden');
         previewBtn.classList.remove('hidden');
         mintStatusEl.textContent = "";
         explorerLink.classList.add('hidden');
         shareBtn.classList.add('hidden');
+    
+        setTimeout(() => {
+            triggerCelebration(currentTraits.rarity);
+        }, 400); 
     }
 
     // --- THAY ĐỔI: Thêm lớp kiểm tra an toàn trong hàm pick ---
@@ -165,8 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function generateAndDisplayImage(traits) {
-        resultImageEl.classList.add('hidden');
-        
+                
         const imageLayers = TRAIT_ORDER.map(traitType => {
             const traitValue = traits[traitType];
             return `assets/images/${traitType}/${traitValue}.png`;
@@ -188,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         resultImageEl.src = canvas.toDataURL('image/png');
-        resultImageEl.classList.remove('hidden');
+        resultImageEl.classList.add('is-visible');
     }
 
     function loadImage(src) {
@@ -234,7 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: `TraitKit NFT #${uniqueId}`,
                 description: "A unique, randomly generated TraitKit NFT.",
                 image: imageIpfsUrl,
-                attributes: Object.entries(currentTraits).map(([trait_type, value]) => ({ trait_type, value }))
+                attributes: Object.entries(currentTraits).map(([key, value]) => ({ 
+                    // Đảm bảo tính nhất quán của dữ liệu
+                    trait_type: key.toLowerCase().replace('_', ' '), 
+                    value: value 
+                }))
             };
             const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
             const metadataResult = await uploadToPinata(metadataBlob, `metadata-${uniqueId}.json`);
@@ -296,6 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`All IPFS gateways failed to fetch: ${ipfsUri}`);
     }
 
+    // js/main.js
+
     async function displayUserNFTs() {
         if (!address || !contract) return;
         mintsContainer.innerHTML = `<div class="muted"><i class="ri-loader-4-line spin"></i> Loading your NFTs...</div>`;
@@ -303,36 +326,24 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const uris = await contract.getTokensOfOwner(address);
             if (uris.length === 0) {
-                mintsContainer.innerHTML = `<div class="muted">You don't own any NFTs yet.</div>`;
+                // Sử dụng "empty state" đẹp hơn
+                mintsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-inbox-unarchive-line"></i>
+                        <span>Bộ sưu tập của bạn trống</span>
+                        <p>Hãy mint NFT đầu tiên để bắt đầu!</p>
+                    </div>
+                `;
                 return;
             }
 
-            mintsContainer.innerHTML = '';
-            // --- CẢI TIẾN: Không dùng Promise.all để tránh một lỗi làm hỏng tất cả ---
-            for (const uri of uris) {
-                const nftElement = document.createElement('div');
-                nftElement.className = 'nft-item';
-                nftElement.innerHTML = `<div class="nft-placeholder"><i class="ri-loader-4-line spin"></i></div>`;
-                mintsContainer.appendChild(nftElement);
-                
-                try {
-                    const metadata = await fetchWithFallback(uri);
-                    const imgUrl = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'); // Ưu tiên Pinata để hiển thị
-                    
-                    nftElement.innerHTML = `<img src="${imgUrl}" alt="${metadata.name}" title="${metadata.name}">`;
-                    
-                    nftElement.addEventListener('click', () => openDetailModal(metadata));
-                    
-                    const imgElement = nftElement.querySelector('img');
-                    imgElement.onerror = () => {
-                         nftElement.innerHTML = `<div class="nft-error">Image Fail</div>`;
-                    };
+            // Fetch tất cả metadata trước khi render
+            const metadataPromises = uris.map(uri => fetchWithFallback(uri).catch(e => null));
+            const userNftsMetadata = (await Promise.all(metadataPromises)).filter(meta => meta != null);
 
-                } catch (e) {
-                    console.error(`Could not load NFT with URI ${uri}`, e);
-                    nftElement.innerHTML = `<div class="nft-error">Load Fail</div>`;
-                }
-            }
+            // **QUAN TRỌNG: Gọi hàm renderNftList để hiển thị**
+            renderNftList(userNftsMetadata, mintsContainer);
+
         } catch (error) {
             console.error("Failed to load user NFTs from contract:", error);
             mintsContainer.innerHTML = `<div class="muted">Error loading your NFTs. Check console.</div>`;
@@ -424,7 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(metadataPromises);
             
             allNftsMetadata = results.filter(meta => meta != null); // Lọc bỏ các kết quả lỗi
-    
+            collectionStats.textContent = `${allNftsMetadata.length} NFTs`;
+
             populateFilters();
             applyFilters(); // Hiển thị tất cả lúc đầu
     
@@ -451,32 +463,115 @@ document.addEventListener('DOMContentLoaded', () => {
             const rarityAttr = meta.attributes.find(a => a.trait_type === 'rarity');
             return rarityAttr && rarityAttr.value === selectedRarity;
         });
-    
+        collectionStats.textContent = `Showing ${filteredNfts.length} of ${allNftsMetadata.length} NFTs`;
         renderNftList(filteredNfts, globalMintsContainer);
     }
     
-    // Hàm render tái sử dụng
+    // js/main.js - PHIÊN BẢN GỌN GÀNG, KHÔNG CÒN LOGIC MIN-HEIGHT
+
     function renderNftList(metadataList, container) {
         container.innerHTML = '';
+
         if (metadataList.length === 0) {
-            container.innerHTML = `<div class="muted">No NFTs match the current filter.</div>`;
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="ri-search-eye-line"></i>
+                    <span>Không tìm thấy NFT</span>
+                    <p>Không có NFT nào khớp với bộ lọc hiện tại.</p>
+                </div>
+            `;
             return;
         }
-    
-        metadataList.forEach(metadata => {
+        
+        metadataList.forEach((metadata, index) => {
             const nftElement = document.createElement('div');
             nftElement.className = 'nft-item';
+            nftElement.dataset.title = metadata.name;
+            
+            const rarityAttr = metadata.attributes.find(a => a.trait_type === 'rarity');
+            if (rarityAttr) {
+                nftElement.classList.add(`rarity-${rarityAttr.value.toLowerCase()}`);
+            }
+            
             const imgUrl = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
             nftElement.innerHTML = `<img src="${imgUrl}" alt="${metadata.name}" title="${metadata.name}">`;
             
-            // Tái sử dụng chức năng mở modal chi tiết
             nftElement.addEventListener('click', () => openDetailModal(metadata));
-    
+
+            nftElement.style.transitionDelay = `${index * 50}ms`;
+
             container.appendChild(nftElement);
+
+            setTimeout(() => {
+                nftElement.classList.add('is-visible');
+            }, 10);
         });
+    } 
+
+   
+
+    function triggerCelebration(rarity) {
+        // Các thiết lập cơ bản cho một vụ nổ pháo hoa
+        const fireworkDefaults = {
+            spread: 360,      // Bắn ra mọi hướng (360 độ)
+            ticks: 60,        // Thời gian tồn tại của hạt (càng cao càng lâu)
+            gravity: 1,       // Có trọng lực để hạt rơi xuống
+            decay: 0.94,      // Tốc độ mờ dần
+            startVelocity: 30,// Tốc độ bắn ban đầu
+            shapes: ['star'], // Dùng hình ngôi sao cho đẹp
+        };
+    
+        switch (rarity) {
+            case 'Rare':
+                // Bắn một chùm pháo hoa màu xanh từ trung tâm
+                confetti({
+                    ...fireworkDefaults,
+                    particleCount: 50,
+                    scalar: 1.2,
+                    colors: ['#58A6FF', '#A5D6FF', '#FFFFFF']
+                });
+                break;
+    
+            case 'Epic':
+                // Bắn hai chùm pháo hoa màu tím từ hai bên
+                // Chùm 1 (bên trái)
+                confetti({
+                    ...fireworkDefaults,
+                    particleCount: 70,
+                    origin: { x: 0.25, y: 0.6 },
+                    colors: ['#A37BFF', '#D8BFFF', '#FFFFFF']
+                });
+                // Chùm 2 (bên phải)
+                confetti({
+                    ...fireworkDefaults,
+                    particleCount: 70,
+                    origin: { x: 0.75, y: 0.6 },
+                    colors: ['#A37BFF', '#D8BFFF', '#FFFFFF']
+                });
+                break;
+    
+            case 'Legendary':
+                // Màn trình diễn pháo hoa hoành tráng trong 3 giây
+                const duration = 3 * 1000;
+                const end = Date.now() + duration;
+    
+                (function frame() {
+                    // Tạo ra các vụ nổ ngẫu nhiên liên tục
+                    confetti({
+                        ...fireworkDefaults,
+                        particleCount: Math.random() * 20 + 40, // Số hạt ngẫu nhiên
+                        origin: { x: Math.random(), y: Math.random() - 0.2 }, // Vị trí ngẫu nhiên
+                        colors: ['#FFD700', '#FFB700', '#FFFFFF', '#FFFACD']
+                    });
+    
+                    // Tiếp tục bắn cho đến khi hết thời gian
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+                break;
+        }
     }
-
-
 
 
     function closeDetailModal() {

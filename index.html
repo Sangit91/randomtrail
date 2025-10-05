@@ -49,7 +49,7 @@
 
                 <div id="result" class="out mono" style="min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                     <span id="resultText">Your rolled traits will appear here.</span>
-                    <img id="resultImage" class="hidden" style="max-width: 100px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1)"/>
+                    <img id="resultImage" style="max-width: 100px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1)"/>
                 </div>
 
                 <div id="mintStatus" class="sub" style="margin-top: 15px; min-height: 20px;"></div>
@@ -89,27 +89,34 @@
         <!-- === KHU VỰC BỘ SƯU TẬP TOÀN CẦU === -->
         <!-- ======================================================== -->
         <section class="card animate-on-load delay-3" style="margin-top: 24px;">
-            <div class="row">
-                <h2 class="title-gradient" style="font-size: 24px;">Global Collection</h2>
-                <button id="refreshGlobal" class="btn ghost" style="padding: 6px 10px; font-size: 12px;">
-                    <i class="ri-refresh-line"></i> Refresh All
-                </button>
+            <!-- KHU VỰC ĐIỀU KHIỂN -->
+            <div class="collection-header">
+                <div class="title-group">
+                    <h2 class="title-gradient" style="font-size: 24px;">Global Collection</h2>
+                    <span id="collectionStats" class="collection-stats muted">— NFTs</span>
+                </div>
+                <div class="controls-group">
+                    <div class="filter-wrapper">
+                        <select id="rarityFilter" class="filter-select">
+                            <option value="all">All Rarities</option>
+                            <!-- Tùy chọn sẽ được thêm bằng JS -->
+                        </select>
+                    </div>
+                    <button id="refreshGlobal" class="btn ghost" style="padding: 8px 12px; font-size: 14px;">
+                        <i class="ri-refresh-line"></i> <span>Refresh</span>
+                    </button>
+                </div>
             </div>
             
-            <!-- Bộ lọc -->
-            <div id="filters" class="row" style="margin-top: 10px;">
-                <select id="rarityFilter" class="filter-select">
-                    <option value="all">All Rarities</option>
-                    <!-- Tùy chọn sẽ được thêm bằng JS -->
-                </select>
-                <!-- Thêm các bộ lọc khác ở đây nếu muốn -->
-            </div>
-
             <!-- Nơi hiển thị NFT toàn cầu -->
-            <div id="globalMintsContainer" class="col" style="margin-top: 10px; display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px;">
-                <div class="muted">Click "Refresh All" to load the global collection.</div>
+            <div id="globalMintsContainer" class="nft-grid">
+                <div class="empty-state">
+                    <i class="ri-gallery-line"></i>
+                    <span>Bộ sưu tập đang chờ được khám phá</span>
+                    <p>Nhấn "Refresh" để tải tất cả NFT đã được mint.</p>
+                </div>
             </div>
-        </section>    
+        </section> 
 
     </main>
     
@@ -175,6 +182,7 @@
     <script src="js/config.js"></script>
     <script src="js/image-manifest.js"></script>
     <script src="js/abi.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

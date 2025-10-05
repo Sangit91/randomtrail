@@ -311,7 +311,15 @@ h1 {
     padding: 20px 0;
 }
 
+/* css/style.css */
+
+/* ===================================================================== */
+/* === HIỆU ỨNG XUẤT HIỆN NỐI TIẾP CHO NFT (PHIÊN BẢN HOÀN CHỈNH) === */
+/* ===================================================================== */
+
+/* 1. Style NỀN TẢNG cho tất cả các item trong lưới */
 .nft-item, .nft-placeholder, .nft-error {
+    /* Các thuộc tính layout và style cũ của bạn được giữ lại */
     width: 80px;
     height: 80px;
     border-radius: var(--radius-md);
@@ -323,8 +331,25 @@ h1 {
     font-size: 12px;
     color: var(--muted);
     flex-shrink: 0;
+    
+    /* --- PHẦN HIỆU ỨNG MỚI --- */
+
+    /* a. Trạng thái "ẩn" mặc định */
+    opacity: 0;
+    transform: translateY(15px);
+
+    /* b. Định nghĩa hiệu ứng chuyển động mượt mà cho TẤT CẢ các thuộc tính cần thiết */
+    transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition-delay: 0s; /* Độ trễ mặc định là 0 */
 }
 
+/* 2. Class để KÍCH HOẠT trạng thái "hiện" */
+.nft-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 3. Style cho thẻ IMG bên trong (giữ nguyên) */
 .nft-item img {
     width: 100%;
     height: 100%;
@@ -333,15 +358,45 @@ h1 {
     transition: transform 0.2s ease-in-out;
 }
 
+/* 4. Hiệu ứng Hover (giữ nguyên) */
 .nft-item img:hover {
     transform: scale(1.08);
-    cursor: pointer;
 }
 
+/* 5. Style cho trạng thái lỗi (giữ nguyên) */
 .nft-error {
     background-color: rgba(248, 81, 73, 0.1);
     border-color: rgba(248, 81, 73, 0.3);
     color: var(--accent-red);
+}
+
+/* 6. Style cho hiệu ứng overlay tên (nếu bạn đã thêm trước đó) */
+.nft-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.nft-item::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 6px 6px;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    text-align: center;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+}
+
+.nft-item:hover::after {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* --- HIỆU ỨNG VIỀN GRADIENT TĨNH CHO KHUNG KẾT QUẢ --- */
@@ -627,3 +682,271 @@ hr {
 .delay-2 { animation-delay: 0.4s; }
 .delay-3 { animation-delay: 0.6s; }
 .delay-4 { animation-delay: 0.8s; }
+
+.btn:active {
+    transform: translateY(0) scale(0.98); /* Hơi thu nhỏ nút lại khi nhấn */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Giảm bóng đổ */
+}
+
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Thêm transition cho mượt */
+    /* ... các thuộc tính cũ ... */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Nhấc card lên một chút */
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2), var(--shadow-glow); /* Tăng bóng đổ cho nổi bật */
+}
+
+/* Áp dụng cho các nút refresh */
+#viewMints:hover i, #refreshGlobal:hover i {
+    transition: transform 0.5s ease;
+    transform: rotate(360deg); /* Xoay 1 vòng */
+}
+
+
+/* Áp dụng style cho chính khung .nft-item, không phải thẻ img bên trong */
+.nft-item.rarity-common {
+    border: 2px solid var(--border);
+}
+
+/* --- Uncommon --- */
+.nft-item.rarity-uncommon,
+#result.rarity-uncommon {
+  border: 3px solid var(--accent-green);
+  border-image: none; /* Rất quan trọng: Reset lại border gradient mặc định của #result */
+}
+
+/* --- Rare --- */
+.nft-item.rarity-rare,
+#result.rarity-rare {
+  border: 3px solid var(--accent-blue);
+  border-image: none;
+}
+
+/* --- Epic --- */
+.nft-item.rarity-epic,
+#result.rarity-epic {
+  border: 3px solid var(--accent-purple);
+  border-image: none;
+  box-shadow: 0 0 12px rgba(163, 123, 255, 0.7);
+}
+
+/* --- Legendary --- */
+.nft-item.rarity-legendary,
+#result.rarity-legendary {
+  border: 3px solid #ffaf00;
+  border-image: none;
+  box-shadow: 0 0 15px rgba(255, 175, 0, 0.8);
+}
+
+/* ===================================================================== */
+/* === HIỆU ỨNG KHI ROLL TRAITS === */
+/* ===================================================================== */
+
+@keyframes roll-reveal {
+    0% {
+      transform: scale(0.8) rotate(-5deg);
+      opacity: 0;
+    }
+    80% {
+      transform: scale(1.05) rotate(2deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Class để kích hoạt animation */
+  #result.is-rolling {
+    animation: roll-reveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+/* ===================================================================== */
+/* === HIỆU ỨNG XUẤT HIỆN MƯỢT MÀ CHO NFT PREVIEW === */
+/* ===================================================================== */
+
+#resultImage {
+    /* Các thuộc tính style cũ */
+    max-width: 100px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+     
+    /* 1. Trạng thái "ẩn" mặc định */
+    opacity: 0;
+    transform: scale(0.9); /* Hơi nhỏ lại một chút */
+
+    /* 2. Định nghĩa hiệu ứng chuyển động */
+    transition: opacity 0.1s ease-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 3. Class để kích hoạt trạng thái "hiện" */
+#resultImage.is-visible {
+    opacity: 1;
+    transform: scale(1); /* Trở về kích thước bình thường */
+}
+
+
+/* ===================================================================== */
+/* === GIAO DIỆN NÂNG CẤP CHO GLOBAL COLLECTION === */
+/* ===================================================================== */
+
+/* 1. Header & Control Panel */
+.collection-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.collection-stats {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.controls-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 2. Custom Dropdown Filter (Rất quan trọng cho thẩm mỹ) */
+.filter-wrapper {
+    position: relative;
+}
+
+.filter-select {
+    -webkit-appearance: none; /* Bỏ giao diện mặc định trên Chrome/Safari */
+    -moz-appearance: none; /* Bỏ giao diện mặc định trên Firefox */
+    appearance: none;
+    background-color: var(--bg-light);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px 32px 8px 12px; /* Chừa không gian cho icon mũi tên */
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.filter-select:hover {
+    border-color: var(--accent-blue);
+}
+
+/* Thêm icon mũi tên tùy chỉnh */
+.filter-wrapper::after {
+    content: '\EA6D'; /* Mã icon mũi tên xuống của Remix Icon */
+    font-family: 'remixicon' !important;
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--muted);
+    pointer-events: none; /* Để có thể click xuyên qua */
+}
+
+
+/* 3. NFT Grid Layout */
+.nft-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+    padding-top: 20px;
+
+    /* --- PHẦN SỬA LỖI QUAN TRỌNG --- */
+    
+    /* a. Đặt chiều cao tối thiểu để container không bao giờ bị co lại */
+    min-height: 200px; /* Bạn có thể điều chỉnh con số này */
+
+    /* b. Đảm bảo các NFT luôn bắt đầu từ trên xuống */
+    align-content: start;
+    
+    /* c. Thêm transition để nó có thể giãn ra mượt mà nếu có nhiều NFT */
+    transition: min-height 0.3s ease;
+}
+
+/* 4. Đánh bóng NFT Item với hiệu ứng Hover */
+.nft-item {
+    position: relative; /* Cần cho hiệu ứng overlay */
+    overflow: hidden; /* Giấu các phần thừa của overlay */
+}
+
+.nft-item::after {
+    content: attr(data-title); /* Lấy tên NFT từ attribute */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 6px 6px;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    text-align: center;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    
+    /* Hiệu ứng mặc định */
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+}
+
+.nft-item:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nft-item img:hover {
+    transform: scale(1.05); /* Giữ hiệu ứng scale cũ */
+}
+
+/* Thêm vào cuối file style.css */
+
+.empty-state {
+    /* Cho phép chiếm toàn bộ chiều rộng của grid */
+    grid-column: 1 / -1;
+
+    /* Dùng flexbox để tự căn giữa nội dung theo chiều dọc */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    /* Quan trọng: Bắt nó chiếm toàn bộ chiều cao của cha nó */
+    height: 100%;
+    min-height: 160px; /* Đảm bảo nó có chiều cao tối thiểu ngay cả khi cha nó chưa render */
+
+    /* Style cũ */
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.empty-state i {
+    font-size: 48px;
+    opacity: 0.3;
+}
+.empty-state span {
+    display: block;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 16px;
+}
+.empty-state p {
+    font-size: 14px;
+    margin-top: 4px;
+}
