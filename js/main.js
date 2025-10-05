@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultImageEl = $("resultImage"), viewMintsBtn = $("viewMints"), mintsContainer = $("mintsContainer");
     const canvas = $('imageCanvas');
     const ctx = canvas.getContext('2d');
+    // Đầu file, trong khu vực DOM ELEMENT SELECTORS
+    const nftDetailModal = $("nftDetailModal");
+    const closeDetailModalBtn = $("closeDetailModal");
     
     const previewBtn = $("preview");
     const previewModal = $("previewModal");
@@ -303,6 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     nftElement.innerHTML = `<img src="${imgUrl}" alt="${metadata.name}" title="${metadata.name}">`;
                     
+                    nftElement.addEventListener('click', () => openDetailModal(metadata));
+                    
                     const imgElement = nftElement.querySelector('img');
                     imgElement.onerror = () => {
                          nftElement.innerHTML = `<div class="nft-error">Image Fail</div>`;
@@ -352,11 +357,59 @@ document.addEventListener('DOMContentLoaded', () => {
         previewModal.classList.add('hidden');
     }
 
+
+    // Thêm các hàm này vào khu vực --- CÁC HÀM CHÍNH ---
+
+    function openDetailModal(metadata) {
+        if (!metadata) return;
+
+        const detailNameEl = $('detailName');
+        const detailImageEl = $('detailImage');
+        const attributesContainer = $('detailAttributesContainer');
+
+        // Cập nhật tên và ảnh
+        detailNameEl.textContent = metadata.name;
+        detailImageEl.src = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+
+        // Xóa các thuộc tính cũ và render các thuộc tính mới
+        attributesContainer.innerHTML = '';
+        metadata.attributes.forEach(attr => {
+            const attrElement = document.createElement('div');
+            attrElement.className = 'attribute-item';
+
+            // Thêm màu cho độ hiếm
+            let valueClass = '';
+            if (attr.trait_type.toLowerCase() === 'rarity') {
+                valueClass = `rarity-${attr.value.toLowerCase()}`;
+            }
+
+            attrElement.innerHTML = `
+                <span class="type">${attr.trait_type.replace('_', ' ')}</span>
+                <span class="value ${valueClass}">${attr.value}</span>
+            `;
+            attributesContainer.appendChild(attrElement);
+        });
+
+        // Hiển thị modal
+        nftDetailModal.classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+        nftDetailModal.classList.add('hidden');
+    }
+
     // --- EVENT LISTENERS ---
     connectBtn.addEventListener('click', connectWallet);
     rollBtn.addEventListener('click', rollTraits);
     mintBtn.addEventListener('click', mintNFT);
     viewMintsBtn.addEventListener('click', displayUserNFTs);
+    // Cuối file, trong khu vực --- EVENT LISTENERS ---
+    closeDetailModalBtn.addEventListener('click', closeDetailModal);
+    nftDetailModal.addEventListener('click', (event) => {
+        if (event.target === nftDetailModal) {
+            closeDetailModal();
+        }
+    });
     
     previewBtn.addEventListener('click', openPreviewModal);
     closeModalBtn.addEventListener('click', closePreviewModal);
