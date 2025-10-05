@@ -602,3 +602,19 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshGlobalBtn.addEventListener('click', displayGlobalNFTs);
     rarityFilter.addEventListener('change', applyFilters);
 });
+
+// Đảm bảo animation viền gradient không bị dừng khi có tương tác
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('btn')) {
+        // Lấy tất cả các phần tử có viền gradient động
+        const elementsWithGradient = document.querySelectorAll('#result.out, .modal-content');
+        
+        // Reset và khởi động lại animation
+        elementsWithGradient.forEach(el => {
+            const currentAnimation = el.style.animation;
+            el.style.animation = 'none';
+            el.offsetHeight; // Trigger reflow
+            el.style.animation = currentAnimation || 'border-spin 4s linear infinite';
+        });
+    }
+});
