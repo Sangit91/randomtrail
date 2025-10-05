@@ -51,7 +51,9 @@
 
                 <div id="mintStatus" class="sub" style="margin-top: 15px; min-height: 20px;"></div>
                 <a id="explorerLink" class="btn ghost hidden" target="_blank" rel="noreferrer" style="margin-top: 10px;"><i class="ri-link"></i> View Transaction</a>
-
+                <a id="shareBtn" class="btn ghost hidden" target="_blank" rel="noopener noreferrer" style="margin-top: 10px;">
+                    <i class="ri-twitter-x-line"></i> Share on X
+                </a>    
             </section>
 
             <!-- Right: Wallet & NFT Collection -->
@@ -80,6 +82,32 @@
                 </div>
             </aside>
         </div>
+        <!-- ======================================================== -->
+        <!-- === KHU VỰC BỘ SƯU TẬP TOÀN CẦU === -->
+        <!-- ======================================================== -->
+        <section class="card" style="margin-top: 24px;">
+            <div class="row">
+                <h2 class="title-gradient" style="font-size: 24px;">Global Collection</h2>
+                <button id="refreshGlobal" class="btn ghost" style="padding: 6px 10px; font-size: 12px;">
+                    <i class="ri-refresh-line"></i> Refresh All
+                </button>
+            </div>
+            
+            <!-- Bộ lọc -->
+            <div id="filters" class="row" style="margin-top: 10px;">
+                <select id="rarityFilter" class="filter-select">
+                    <option value="all">All Rarities</option>
+                    <!-- Tùy chọn sẽ được thêm bằng JS -->
+                </select>
+                <!-- Thêm các bộ lọc khác ở đây nếu muốn -->
+            </div>
+
+            <!-- Nơi hiển thị NFT toàn cầu -->
+            <div id="globalMintsContainer" class="col" style="margin-top: 10px; display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px;">
+                <div class="muted">Click "Refresh All" to load the global collection.</div>
+            </div>
+        </section>    
+
     </main>
     
 <!-- ======================================================== -->
@@ -143,6 +171,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/image-manifest.js"></script>
+    <script src="js/abi.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- GLOBAL VARIABLES ---
     let provider, signer, address, chainId, contract;
     let currentTraits = null;
+    let allNftsMetadata = []; // Lưu trữ metadata của tất cả NFT để lọc
 
     // --- DOM ELEMENT SELECTORS ---
     const $ = (id) => document.getElementById(id);
@@ -14,24 +15,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // Đầu file, trong khu vực DOM ELEMENT SELECTORS
     const nftDetailModal = $("nftDetailModal");
     const closeDetailModalBtn = $("closeDetailModal");
+
+    const refreshGlobalBtn = $('refreshGlobal');
+    const globalMintsContainer = $('globalMintsContainer');
+    const rarityFilter = $('rarityFilter');
     
     const previewBtn = $("preview");
     const previewModal = $("previewModal");
     const closeModalBtn = $("closeModal");
     const previewImage = $("previewImage");
+    
+    const shareBtn = $('shareBtn');
 
     // ==============================================================================
     // === CÁC THÔNG TIN CẤU HÌNH ====================================================
     // ==============================================================================
-    const CONTRACT_ADDRESS = "0x6BB161965157538bb595b70d20A8F11286c5700e";
+    //const CONTRACT_ADDRESS = "0x6BB161965157538bb595b70d20A8F11286c5700e"; sol3
+
+    const CONTRACT_ADDRESS = "0x1E58581c90DE26228809398114c8dF8f713879DB";
+
     // PINATA_JWT sẽ được lấy từ file js/config.js
     const ZENCHAIN_TESTNET_CHAIN_ID = 8408;
     const ZENCHAIN_TESTNET_NAME = 'ZenChain Testnet';
     const ZENCHAIN_TESTNET_RPC_URL = 'https://zenchain-testnet.api.onfinality.io/public';
     const ZENCHAIN_TESTNET_EXPLORER_URL = 'https://zentrace.io';
     const ZENCHAIN_CURRENCY_SYMBOL = 'ZTC';
-
-    const CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"initialOwner","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"getTokensOfOwner","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"string","name":"uri","type":"string"}],"name":"safeMint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
     
     const RARITY_WEIGHTS = [ ...Array(50).fill('Common'), ...Array(25).fill('Uncommon'), ...Array(15).fill('Rare'), ...Array(8).fill('Epic'), ...Array(2).fill('Legendary') ];
 
@@ -138,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
         previewBtn.classList.remove('hidden');
         mintStatusEl.textContent = "";
         explorerLink.classList.add('hidden');
+        shareBtn.classList.add('hidden');
     }
 
     // --- THAY ĐỔI: Thêm lớp kiểm tra an toàn trong hàm pick ---
@@ -238,7 +247,13 @@ document.addEventListener('DOMContentLoaded', () => {
             mintStatusEl.textContent = `NFT Minted Successfully!`;
             explorerLink.href = `${ZENCHAIN_TESTNET_EXPLORER_URL}/tx/${tx.hash}`;
             explorerLink.classList.remove('hidden');
-            
+            const tweetText = encodeURIComponent(`I just minted this awesome TraitKit NFT on #ZenChain! Check out the dApp:`);
+            const dAppUrl = encodeURIComponent(window.location.href); // Lấy URL của trang hiện tại
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${dAppUrl}`;
+
+            shareBtn.href = twitterUrl;
+            shareBtn.classList.remove('hidden');
+
             mintBtn.innerHTML = `<i class="ri-check-line"></i> Minted!`;
             
             // --- CẢI TIẾN: Thêm độ trễ trước khi làm mới danh sách NFT ---
@@ -357,9 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         previewModal.classList.add('hidden');
     }
 
-
-    // Thêm các hàm này vào khu vực --- CÁC HÀM CHÍNH ---
-
+  
     function openDetailModal(metadata) {
         if (!metadata) return;
 
@@ -394,6 +407,78 @@ document.addEventListener('DOMContentLoaded', () => {
         nftDetailModal.classList.remove('hidden');
     }
 
+    async function displayGlobalNFTs() {
+        if (!contract) return;
+        globalMintsContainer.innerHTML = `<div class="muted"><i class="ri-loader-4-line spin"></i> Loading global collection...</div>`;
+        allNftsMetadata = []; // Xóa dữ liệu cũ
+    
+        try {
+            const uris = await contract.getAllTokenURIs(); // Gọi hàm mới
+            if (uris.length === 0) {
+                globalMintsContainer.innerHTML = `<div class="muted">No NFTs have been minted yet.</div>`;
+                return;
+            }
+    
+            // Dùng Promise.all để fetch metadata song song cho nhanh
+            const metadataPromises = uris.map(uri => fetchWithFallback(uri).catch(e => null));
+            const results = await Promise.all(metadataPromises);
+            
+            allNftsMetadata = results.filter(meta => meta != null); // Lọc bỏ các kết quả lỗi
+    
+            populateFilters();
+            applyFilters(); // Hiển thị tất cả lúc đầu
+    
+        } catch (error) {
+            console.error("Failed to load global NFTs:", error);
+            globalMintsContainer.innerHTML = `<div class="muted">Error loading global collection. Check console.</div>`;
+        }
+    }
+    
+    function populateFilters() {
+        const rarities = [...new Set(allNftsMetadata.map(meta => meta.attributes.find(a => a.trait_type === 'rarity')?.value).filter(Boolean))];
+        rarityFilter.innerHTML = '<option value="all">All Rarities</option>'; // Reset
+        rarities.forEach(rarity => {
+            const option = new Option(rarity, rarity);
+            rarityFilter.add(option);
+        });
+    }
+    
+    function applyFilters() {
+        const selectedRarity = rarityFilter.value;
+    
+        const filteredNfts = allNftsMetadata.filter(meta => {
+            if (selectedRarity === 'all') return true;
+            const rarityAttr = meta.attributes.find(a => a.trait_type === 'rarity');
+            return rarityAttr && rarityAttr.value === selectedRarity;
+        });
+    
+        renderNftList(filteredNfts, globalMintsContainer);
+    }
+    
+    // Hàm render tái sử dụng
+    function renderNftList(metadataList, container) {
+        container.innerHTML = '';
+        if (metadataList.length === 0) {
+            container.innerHTML = `<div class="muted">No NFTs match the current filter.</div>`;
+            return;
+        }
+    
+        metadataList.forEach(metadata => {
+            const nftElement = document.createElement('div');
+            nftElement.className = 'nft-item';
+            const imgUrl = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+            nftElement.innerHTML = `<img src="${imgUrl}" alt="${metadata.name}" title="${metadata.name}">`;
+            
+            // Tái sử dụng chức năng mở modal chi tiết
+            nftElement.addEventListener('click', () => openDetailModal(metadata));
+    
+            container.appendChild(nftElement);
+        });
+    }
+
+
+
+
     function closeDetailModal() {
         nftDetailModal.classList.add('hidden');
     }
@@ -418,4 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closePreviewModal();
         }
     });
+
+    refreshGlobalBtn.addEventListener('click', displayGlobalNFTs);
+    rarityFilter.addEventListener('change', applyFilters);
 });
