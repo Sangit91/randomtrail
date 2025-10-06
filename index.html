@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Lucky Traits — ZenChain Mini dApp</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
-    <header>
+    <header class="animate-on-load">
         <div class="wrap nav">
-            <div class="brand"><i class="ri-shining-2-fill"></i> Lucky Traits on ZenChain - Tuvan</div>
+            <div class="brand"><i class="ri-meteor-fill"></i> Lucky Traits on ZenChain - Tử Vận</div>
             
             <!-- Nút button giờ là con trực tiếp của div.nav -->
             <button id="connect" class="btn"><i class="ri-wallet-3-line"></i><span>Connect Wallet</span></button>
@@ -22,7 +25,7 @@
     <main class="wrap">
         <div class="grid">
             <!-- Left: dApp -->
-            <section class="card">
+            <section class="card animate-on-load delay-1">
                 <div class="row">
                    
                     <h1 class="title-gradient">NFT Trait Generator</h1>
@@ -46,16 +49,18 @@
 
                 <div id="result" class="out mono" style="min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                     <span id="resultText">Your rolled traits will appear here.</span>
-                    <img id="resultImage" class="hidden" style="max-width: 100px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1)"/>
+                    <img id="resultImage" style="max-width: 100px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1)"/>
                 </div>
 
                 <div id="mintStatus" class="sub" style="margin-top: 15px; min-height: 20px;"></div>
                 <a id="explorerLink" class="btn ghost hidden" target="_blank" rel="noreferrer" style="margin-top: 10px;"><i class="ri-link"></i> View Transaction</a>
-
+                <a id="shareBtn" class="btn ghost hidden" target="_blank" rel="noopener noreferrer" style="margin-top: 10px;">
+                    <i class="ri-twitter-x-line"></i> Share on X
+                </a>    
             </section>
 
             <!-- Right: Wallet & NFT Collection -->
-            <aside class="card col">
+            <aside class="card col animate-on-load delay-2">
                 <div>
                     <div class="muted">Address</div>
                     <div id="addr" class="mono">—</div>
@@ -80,6 +85,39 @@
                 </div>
             </aside>
         </div>
+        <!-- ======================================================== -->
+        <!-- === KHU VỰC BỘ SƯU TẬP TOÀN CẦU === -->
+        <!-- ======================================================== -->
+        <section class="card animate-on-load delay-3" style="margin-top: 24px;">
+            <!-- KHU VỰC ĐIỀU KHIỂN -->
+            <div class="collection-header">
+                <div class="title-group">
+                    <h2 class="title-gradient" style="font-size: 24px;">Global Collection</h2>
+                    <span id="collectionStats" class="collection-stats muted">— NFTs</span>
+                </div>
+                <div class="controls-group">
+                    <div class="filter-wrapper">
+                        <select id="rarityFilter" class="filter-select">
+                            <option value="all">All Rarities</option>
+                            <!-- Tùy chọn sẽ được thêm bằng JS -->
+                        </select>
+                    </div>
+                    <button id="refreshGlobal" class="btn ghost" style="padding: 8px 12px; font-size: 14px;">
+                        <i class="ri-refresh-line"></i> <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Nơi hiển thị NFT toàn cầu -->
+            <div id="globalMintsContainer" class="nft-grid">
+                <div class="empty-state">
+                    <i class="ri-gallery-line"></i>
+                    <span>Bộ sưu tập đang chờ được khám phá</span>
+                    <p>Nhấn "Refresh" để tải tất cả NFT đã được mint.</p>
+                </div>
+            </div>
+        </section> 
+
     </main>
     
 <!-- ======================================================== -->
@@ -112,6 +150,27 @@
         </div>
     </div>
 
+<!-- ======================================================== -->
+<!-- === MODAL CHI TIẾT NFT (NFT DETAIL) === -->
+<!-- ======================================================== -->
+    <div id="nftDetailModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span id="detailName">NFT Details</span>
+                <button id="closeDetailModal" class="modal-close-btn"><i class="ri-close-line"></i></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body-details">
+                <img id="detailImage" src="" alt="NFT Detail Image">
+                <div id="detailAttributesContainer" class="attributes-grid">
+                    <!-- Các thuộc tính sẽ được chèn vào đây bằng JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="site-footer">
         <div class="wrap">
             <p>Created with <i class="ri-heart-fill" style="color: #ff6b6b;"></i> by <span class="creator-name">Tử Vận</span></p>
@@ -122,6 +181,8 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/image-manifest.js"></script>
+    <script src="js/abi.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
