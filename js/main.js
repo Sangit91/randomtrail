@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==============================================================================
     //const CONTRACT_ADDRESS = "0x6BB161965157538bb595b70d20A8F11286c5700e"; sol3
 
-    const CONTRACT_ADDRESS = "0x1E58581c90DE26228809398114c8dF8f713879DB";
+    const CONTRACT_ADDRESS = "0x672e61450efb64d5619FfBb8deA7189Ff533a85f";
 
     // PINATA_JWT sẽ được lấy từ file js/config.js
     const ZENCHAIN_TESTNET_CHAIN_ID = 8408;
