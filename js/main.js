@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderNftList(filteredNfts, globalMintsContainer);
     }
     
-    // js/main.js - PHIÊN BẢN GỌN GÀNG, KHÔNG CÒN LOGIC MIN-HEIGHT
+    
 
     function renderNftList(metadataList, container) {
         container.innerHTML = '';
