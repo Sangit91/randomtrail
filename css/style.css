@@ -156,7 +156,7 @@ hr { border: none; height: 1px; background-color: var(--border); margin: 24px 0;
 
 .nft-grid, #mintsContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 180px); /* Tăng từ 90px lên 180px */
+    grid-template-columns: repeat(auto-fill, 90px); /* Tăng từ 90px lên 180px */
     gap: 20px; /* Tăng nhẹ từ 16px lên 20px cho cân đối */
     padding-top: 10px;
     align-content: start;
@@ -164,8 +164,8 @@ hr { border: none; height: 1px; background-color: var(--border); margin: 24px 0;
 .nft-grid { min-height: 200px; }
 
 .nft-item, .nft-placeholder, .nft-error {
-    width: 160px;
-    height: 160px;
+    width: 80px;
+    height: 80px;
     border-radius: var(--radius-md);
     background: var(--bg-light);
     border: 1px solid var(--border);
