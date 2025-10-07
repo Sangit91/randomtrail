@@ -1,3 +1,5 @@
+// js/abi.js
+
 const CONTRACT_ABI = [
 	{
 		"inputs": [
