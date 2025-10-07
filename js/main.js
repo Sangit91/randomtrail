@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupApp() {
         contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
         statusEl.textContent = `Wallet: ${address.slice(0, 6)}…${address.slice(-4)}`;
-        addrEl.textContent = address;
+        addrEl.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
         netEl.textContent = `ChainId: ${chainId} (${ZENCHAIN_TESTNET_NAME})`;
         contractEl.textContent = CONTRACT_ADDRESS;
         connectBtn.innerHTML = '<i class="ri-check-line"></i> Connected';
