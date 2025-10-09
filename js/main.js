@@ -300,15 +300,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- CẢI TIẾN: Hàm fetch metadata với nhiều gateway dự phòng và timeout ---
     async function fetchWithFallback(ipfsUri) {
+        // Danh sách các gateway công cộng, ưu tiên các gateway có chính sách CORS tốt hơn
         const gateways = [
-            'https://gateway.pinata.cloud/ipfs/',
             'https://ipfs.io/ipfs/',
-            'https://cloudflare-ipfs.com/ipfs/'
+            'https://gateway.ipfs.io/ipfs/',
+            'https://dweb.link/ipfs/',
+            'https://cloudflare-ipfs.com/ipfs/',
+            'https://gateway.pinata.cloud/ipfs/' // Đưa về cuối danh sách
         ];
         for (const gateway of gateways) {
             try {
                 const url = ipfsUri.replace('ipfs://', gateway);
-                const response = await fetch(url, { signal: AbortSignal.timeout(10000) }); // Timeout 10 giây
+                // Giảm timeout xuống 8 giây để tránh chờ đợi quá lâu
+                const response = await fetch(url, { signal: AbortSignal.timeout(8000) }); 
                 if (response.ok) return response.json();
             } catch (e) {
                 console.warn(`Gateway ${gateway} failed for ${ipfsUri}. Trying next...`);
@@ -393,7 +397,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Cập nhật tên và ảnh
         detailNameEl.textContent = metadata.name;
-        detailImageEl.src = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+        // SỬA LỖI: Sử dụng gateway đáng tin cậy hơn thay vì gateway của Pinata
+        detailImageEl.src = metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
 
         // Xóa các thuộc tính cũ và render các thuộc tính mới
         attributesContainer.innerHTML = '';
@@ -493,7 +498,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 nftElement.classList.add(`rarity-${rarityAttr.value.toLowerCase()}`);
             }
             
-            const imgUrl = metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+            // SỬA LỖI: Sử dụng gateway đáng tin cậy hơn thay vì gateway của Pinata
+            const imgUrl = metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
             nftElement.innerHTML = `<img src="${imgUrl}" alt="${metadata.name}" title="${metadata.name}">`;
             
             nftElement.addEventListener('click', () => openDetailModal(metadata));
@@ -506,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nftElement.classList.add('is-visible');
             }, 10);
         });
-    } 
+    }
 
    
 
