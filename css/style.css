@@ -1,9 +1,14 @@
-/* ===================================================================== */
-/* === LUCKY TRAITS ON ZENCHAIN === */
-/* ===================================================================== */
+/**
+ * Lucky Traits on ZenChain
+ * Main Stylesheet
+ */
 
-/* --- 1. CONFIG & VARIABLES --- */
-:root {
+/* =====================================================================
+   1. Core Setup & Variables
+   ===================================================================== */
+
+   :root {
+    /* Colors */
     --bg-dark: #0D1117;
     --bg-light: #161B22;
     --card: #1A2029;
@@ -11,24 +16,37 @@
     --muted: #8B949E;
     --text: #C9D1D9;
 
-    /* Accent Colors */
+    /* Accents */
     --accent-blue: #58A6FF;
     --accent-purple: #A37BFF;
     --accent-green: #3FB950;
     --accent-red: #F85149;
     --accent-gold: #ffaf00;
 
-    /* UI Values */
+    /* UI Metrics */
     --radius-lg: 16px;
     --radius-md: 10px;
     --shadow-glow: 0 0 40px rgba(88, 166, 255, 0.15);
 }
 
-@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
 
-/* --- 2. GLOBAL STYLES --- */
-* { box-sizing: border-box; }
-html, body { height: 100%; }
+/* =====================================================================
+   2. Global Styles & Resets
+   ===================================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
 body {
     margin: 0;
     background: var(--bg-dark);
@@ -36,132 +54,397 @@ body {
     font: 16px/1.5 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
-a { color: var(--accent-blue); text-decoration: none; }
-a:hover { text-decoration: underline; }
 
-/* --- 3. TYPOGRAPHY --- */
-h1, .title-gradient, .brand { font-family: 'Poppins', sans-serif; }
-h1 { font-size: 32px; margin: 0; font-weight: 700; line-height: 1.2; }
+a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: var(--border);
+    margin: 24px 0;
+    width: 100%;
+}
+
+/* =====================================================================
+   3. Typography
+   ===================================================================== */
+
+h1, .title-gradient, .brand {
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    font-size: 32px;
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
 .title-gradient {
     font-size: 28px;
     background: linear-gradient(90deg, #f7b733, #fc4a1a);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
-.sub { color: var(--muted); font-size: 15px; max-width: 100%; margin: 0; }
-.muted { color: var(--muted); font-size: 14px; }
-.mono { font-family: 'SF Mono', 'Menlo', monospace; font-size: 14px; color: #a5d6ff; }
 
-/* --- 4. LAYOUT & UTILITIES --- */
-.wrap { max-width: 1024px; margin: 0 auto; padding: 24px; }
-main { padding-top: 40px; padding-bottom: 40px; }
-.grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; }
-@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-.row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; width: 100%; }
-.col { display: flex; flex-direction: column; gap: 12px; }
-.hidden { display: none !important; }
-
-/* --- 5. COMPONENTS --- */
-
-/* Header & Brand */
-header { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(150%) blur(10px); background: rgba(13, 17, 23, 0.7); border-bottom: 1px solid var(--border); }
-.nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.brand {
-    display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 22px; letter-spacing: .5px;
-    background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+.sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 100%;
+    margin: 0;
 }
-.brand i { font-size: 28px; background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-/* Cards */
+.muted {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.mono {
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 14px;
+    color: #a5d6ff;
+}
+
+/* =====================================================================
+   4. Layout
+   ===================================================================== */
+
+.wrap {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+main {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================================================================
+   5. Components
+   ===================================================================== */
+
+/* Card */
 .card {
     background: radial-gradient(1000px 300px at 50% -50px, rgba(88, 166, 255, .1), transparent 80%), var(--card);
-    border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-glow);
-    padding: 24px 28px; display: flex; flex-direction: column; gap: 16px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glow);
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 0;
 }
-.card:hover { transform: translateY(-5px); box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2), var(--shadow-glow); }
 
-/* Buttons */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2), var(--shadow-glow);
+}
+
+/* Button */
 .btn {
-    appearance: none; border: 0; border-radius: 999px; padding: 12px 20px; color: #fff;
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 20px;
+    color: #fff;
     background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-    font-weight: 700; display: inline-flex; align-items: center; justify-content: center;
-    gap: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease; white-space: nowrap;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    white-space: nowrap;
 }
-.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
-.btn:active:not(:disabled) { transform: translateY(0) scale(0.98); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
-.btn.ghost:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.15); }
 
-/* UI Elements */
-.panel { display: flex; gap: 12px; flex-wrap: wrap; margin: 0; }
-.chip { border: 1px solid var(--border); padding: 8px 14px; border-radius: 999px; color: var(--muted); font-size: 13px; background: rgba(255, 255, 255, 0.03); }
-.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(163, 123, 255, .1); border: 1px solid rgba(163, 123, 255, .2); font-size: 13px; font-weight: 600; white-space: nowrap; }
-.badge i { color: var(--accent-purple); }
-hr { border: none; height: 1px; background-color: var(--border); margin: 24px 0; width: 100%; }
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
 
-/* Custom Select */
-.filter-wrapper { position: relative; }
+.btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn.ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: none;
+}
+
+.btn.ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Badge & Chip */
+.panel {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.chip {
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(163, 123, 255, .1);
+    border: 1px solid rgba(163, 123, 255, .2);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge i {
+    color: var(--accent-purple);
+}
+
+/* Filter Select */
+.filter-wrapper {
+    position: relative;
+}
+
 .filter-select {
-    -webkit-appearance: none; -moz-appearance: none; appearance: none;
-    background-color: var(--bg-light); color: var(--text);
-    border: 1px solid var(--border); border-radius: var(--radius-md);
-    padding: 8px 32px 8px 12px; font-family: inherit; font-size: 14px;
-    cursor: pointer; transition: border-color 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bg-light);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px 32px 8px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
 }
-.filter-select:hover { border-color: var(--accent-blue); }
-.filter-wrapper::after { content: '\EA6D'; font-family: 'remixicon' !important; position: absolute; top: 50%; right: 12px; transform: translateY(-50%); font-size: 16px; color: var(--muted); pointer-events: none; }
 
-/* Footer */
-.site-footer { border-top: 1px solid var(--border); padding: 40px 0; margin-top: 40px; text-align: center; color: var(--muted); }
-.site-footer p { margin: 5px 0; font-size: 14px; }
-.creator-name { font-weight: 600; background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.sub-footer { font-size: 12px; opacity: 0.7; }
+.filter-select:hover {
+    border-color: var(--accent-blue);
+}
 
-/* --- 6. NFT TRAIT GENERATOR & PREVIEW --- */
-#imageCanvas { background: var(--bg-light); border-radius: var(--radius-md); border: 1px dashed var(--border); max-width: 100%; height: auto; }
+.filter-wrapper::after {
+    content: '\EA6D';
+    font-family: 'remixicon' !important;
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--muted);
+    pointer-events: none;
+}
 
-/* Preview Box (FINAL FIXED VERSION) */
+/* =====================================================================
+   6. Page Structure (Header, Footer)
+   ===================================================================== */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: saturate(150%) blur(10px);
+    background: rgba(13, 17, 23, 0.7);
+    border-bottom: 1px solid var(--border);
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: .5px;
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+}
+
+.brand i {
+    font-size: 28px;
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0;
+    margin-top: 40px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.site-footer p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.creator-name {
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sub-footer {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* =====================================================================
+   7. App UI: NFT Generator & Result
+   ===================================================================== */
+
+#imageCanvas {
+    background: var(--bg-light);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border);
+    max-width: 100%;
+    height: auto;
+}
+
 #result.out {
-    transform-style: preserve-3d;
-    will-change: border-image;
-    background: var(--bg-light); padding: 16px; border-radius: var(--radius-md);
-    word-break: break-all; background-clip: padding-box;
-    /* CSS Variables for Rarity Colors */
     --rarity-color-1: var(--accent-purple);
     --rarity-color-2: var(--accent-blue);
-    /* Explicit Border Properties */
-    border-width: 3px; border-style: solid; border-color: transparent;
-    /* Border Image powered by CSS Variables */
+    background: var(--bg-light);
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border-width: 3px;
+    border-style: solid;
     border-image: conic-gradient(from var(--angle), var(--bg-light), var(--rarity-color-2), var(--rarity-color-1), var(--rarity-color-2), var(--bg-light)) 1;
+    word-break: break-all;
+    transform-style: preserve-3d;
+    transition: all 0.2s ease;
     animation: border-spin 4s linear infinite;
-    transition: box-shadow 0.3s ease;
 }
 
 #resultImage {
-    max-width: 250px; border-radius: 8px; margin-top: 10px;
-    opacity: 0; transform: scale(0.9);
+    max-width: 250px;
+    border-radius: 8px;
+    margin-top: 10px;
+    opacity: 0;
+    transform: scale(0.9);
     transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-#resultImage.is-visible { opacity: 1; transform: scale(1); }
-#result.is-rolling { animation: roll-reveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
-/* --- 7. NFT COLLECTION & GRID --- */
-.collection-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-.title-group { display: flex; align-items: baseline; gap: 12px; }
-.collection-stats { font-size: 14px; font-weight: 600; }
-.controls-group { display: flex; align-items: center; gap: 12px; }
+#resultImage.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#result.is-rolling {
+    animation: roll-reveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* =====================================================================
+   8. App UI: NFT Collection
+   ===================================================================== */
+
+.collection-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.collection-stats {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.controls-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
 .nft-grid, #mintsContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 90px); /* Tăng từ 90px lên 180px */
-    gap: 20px; /* Tăng nhẹ từ 16px lên 20px cho cân đối */
+    grid-template-columns: repeat(auto-fill, 90px);
+    gap: 20px;
     padding-top: 10px;
     align-content: start;
 }
-.nft-grid { min-height: 200px; }
+
+.nft-grid {
+    min-height: 200px;
+}
 
 .nft-item, .nft-placeholder, .nft-error {
     width: 80px;
@@ -196,105 +479,22 @@ hr { border: none; height: 1px; background-color: var(--border); margin: 24px 0;
     color: var(--accent-red);
 }
 
-/* === HIỆU ỨNG VIỀN CHẠY CHO KHUNG KẾT QUẢ (NÂNG CẤP) === */
-/* ===================================================================== */
-
-#result.out {
-    /* Giữ lại các thuộc tính cơ bản */
-    background: var(--bg-light);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    word-break: break-all;
-    transition: all 0.2s ease;
-    
-    /* ÁP DỤNG HIỆU ỨNG VIỀN CHẠY MỚI */
-    border: 3px solid; /* Độ dày viền */
-    border-image: conic-gradient(from var(--angle),
-                                  var(--bg-light), /* <<< Quan trọng: Khớp với màu nền */
-                                  var(--accent-purple),
-                                  var(--accent-blue),
-                                  var(--accent-purple),
-                                  var(--bg-light)) 1; /* <<< Quan trọng */
-    animation: border-spin 4s linear infinite;
-}
-
-/* ===================================================================== */
-/* === MODAL PREVIEW STYLING (PHIÊN BẢN ĐẲNG CẤP - HIGH-END) === */
-/* ===================================================================== */
-
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(13, 17, 23, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    display: flex; align-items: center; justify-content: center; z-index: 1000;
-    opacity: 0; animation: fadeIn 0.3s forwards;
-}
-.modal-content {
-    width: 480px; max-width: 90vw; background: var(--card);
-    border-radius: var(--radius-lg); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    display: flex; flex-direction: column;
-    border: 3px solid;
-    border-image: conic-gradient(from var(--angle), var(--card), var(--accent-purple), var(--accent-blue), var(--accent-purple), var(--card)) 1;
-    animation: border-spin 4s linear infinite;
-}
-.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
-.modal-header span { font-size: 16px; font-weight: 600; color: var(--text); }
-.modal-close-btn { appearance: none; border: 0; background: transparent; color: var(--muted); font-size: 22px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; }
-.modal-close-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text); }
-
-.modal-body { padding: 8px; position: relative; overflow: hidden; }
-#previewImage { width: 100%; height: auto; border-radius: calc(var(--radius-md) - 2px); display: block; }
-.overlay-footer { position: absolute; bottom: 8px; left: 8px; right: 8px; display: flex; justify-content: space-around; padding: 16px 20px; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); border-top: 1px solid rgba(255, 255, 255, 0.1); }
-.detail-item { text-align: center; }
-.detail-item span { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.detail-item strong { display: block; font-size: 16px; color: var(--text); margin-top: 4px; font-weight: 600; }
-
-.modal-body-details { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-#detailImage { width: 100%; border-radius: var(--radius-md); background-color: var(--bg-light); }
-.attributes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-.attribute-item { background: var(--bg-light); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; text-align: center; }
-.attribute-item .type { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-.attribute-item .value { display: block; font-size: 14px; font-weight: 600; color: var(--text); }
-
-/* --- 10. KEYFRAME ANIMATIONS & HELPERS --- */
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes border-spin { to { --angle: 360deg; } }
-@keyframes fadeIn { to { opacity: 1; } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes roll-reveal { 0% { transform: scale(0.8) rotate(-5deg); opacity: 0; } 80% { transform: scale(1.05) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
-
-.animate-on-load { animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards; }
-.delay-1 { animation-delay: 0.2s; }
-.delay-2 { animation-delay: 0.4s; }
-.delay-3 { animation-delay: 0.6s; }
-
-#viewMints:hover i, #refreshGlobal:hover i { transition: transform 0.5s ease; transform: rotate(360deg); }
-/* ===================================================================== */
-/* === STYLING CHO TRẠNG THÁI RỖNG (EMPTY STATE) === */
-/* ===================================================================== */
-
 .empty-state {
-    /* Quan trọng: Cho phép phần tử này chiếm toàn bộ chiều rộng của grid */
     grid-column: 1 / -1;
-
-    /* Dùng Flexbox để căn giữa nội dung bên trong */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    
-    /* Thêm khoảng đệm và chiều cao tối thiểu */
     padding: 40px 20px;
     min-height: 150px;
-    
-    /* Cải thiện thẩm mỹ */
     color: var(--muted);
 }
 
 .empty-state i {
-    font-size: 40px; /* Tăng kích thước icon */
+    font-size: 40px;
     margin-bottom: 16px;
-    color: rgba(255, 255, 255, 0.2); /* Làm màu icon dịu hơn */
+    color: rgba(255, 255, 255, 0.2);
 }
 
 .empty-state span {
@@ -307,5 +507,214 @@ hr { border: none; height: 1px; background-color: var(--border); margin: 24px 0;
 .empty-state p {
     margin-top: 8px;
     font-size: 14px;
-    max-width: 350px; /* Giới hạn chiều rộng của đoạn văn */
+    max-width: 350px;
+}
+
+/* =====================================================================
+   9. App UI: Modals
+   ===================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 17, 23, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+.modal-content {
+    width: 480px;
+    max-width: 90vw;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    border: 3px solid;
+    border-image: conic-gradient(from var(--angle), var(--card), var(--accent-purple), var(--accent-blue), var(--accent-purple), var(--card)) 1;
+    animation: border-spin 4s linear infinite;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header span {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.modal-close-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 22px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+}
+
+.modal-body {
+    padding: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-body-details {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#previewImage,
+#detailImage {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+#previewImage {
+     border-radius: calc(var(--radius-md) - 2px);
+}
+
+#detailImage {
+    border-radius: var(--radius-md);
+    background-color: var(--bg-light);
+}
+
+.overlay-footer {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: space-around;
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-item {
+    text-align: center;
+}
+
+.detail-item span {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item strong {
+    display: block;
+    font-size: 16px;
+    color: var(--text);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.attributes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.attribute-item {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    text-align: center;
+}
+
+.attribute-item .type {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.attribute-item .value {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* =====================================================================
+   10. Animations & Utilities
+   ===================================================================== */
+
+/* Keyframes */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes border-spin {
+    to { --angle: 360deg; }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes roll-reveal {
+    0% { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+    80% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* Helper Classes */
+.hidden {
+    display: none !important;
+}
+
+.animate-on-load {
+    animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+
+#viewMints:hover i,
+#refreshGlobal:hover i {
+    transition: transform 0.5s ease;
+    transform: rotate(360deg);
 }
