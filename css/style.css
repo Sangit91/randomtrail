@@ -326,11 +326,22 @@ header {
     text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
 }
 
-.brand i {
-    font-size: 28px;
-    background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.brand-logo {
+    height: 40px; /* Điều chỉnh chiều cao của logo nếu cần */
+    width: auto;
+}
+
+.brand span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text); 
 }
 
 .site-footer {
