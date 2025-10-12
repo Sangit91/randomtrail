@@ -22,7 +22,7 @@
             
             <!-- Nút button giờ là con trực tiếp của div.nav -->
             <button id="connect" class="btn"><i class="ri-wallet-3-line"></i><span>Connect Wallet</span></button>
-        </div>
+        </div>  
     </header>
 
     <main class="wrap">
@@ -121,6 +121,26 @@
             </div>
         </section> 
 
+        <!-- ======================================================== -->
+        <!-- === THƯ VIỆN THUỘC TÍNH (TRAIT LIBRARY) === -->
+        <!-- ======================================================== -->
+        <section id="traitLibrary" class="card animate-on-load delay-3" style="margin-top: 24px;">
+            <div class="collection-header">
+                <div class="title-group">
+                    <h2 class="title-gradient" style="font-size: 24px;">Trait Library</h2>
+                </div>
+            </div>
+            
+            <!-- Nơi hiển thị các thuộc tính -->
+            <div id="libraryContainer" class="library-grid-container">
+                <!-- Nội dung sẽ được tạo tự động bằng JavaScript -->
+                <div class="empty-state">
+                    <i class="ri-loader-4-line spin"></i>
+                    <span>Đang tải thư viện...</span>
+                </div>
+            </div>
+        </section> 
+
     </main>
     
 <!-- ======================================================== -->
@@ -184,6 +204,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/image-manifest.js"></script>
+    <script src="js/recipes.js"></script> 
     <script src="js/abi.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script src="js/main.js"></script>
