@@ -154,14 +154,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!address) {
             return alert("Please connect your wallet first.");
         }
-        if (typeof IMAGE_MANIFEST === 'undefined' || typeof TRAIT_ORDER === 'undefined') {
-            return alert('Essential application files (image-manifest.js) are missing.');
+        if (typeof IMAGE_MANIFEST === 'undefined' || typeof TRAIT_ORDER === 'undefined' || typeof determineRarityFromRecipes === 'undefined') {
+            return alert('Essential application files (image-manifest.js, recipes.js) are missing or failed to load.');
         }
     
-        // Reset UI for a new roll
+        // 1. Reset UI cho lần roll mới
         resEl.classList.remove('is-rolling');
-        void resEl.offsetWidth; // Trigger reflow for animation restart
+        void resEl.offsetWidth; // Trigger reflow để restart animation
         resEl.classList.add('is-rolling');
+        // Xóa tất cả các class rarity cũ để đảm bảo màu sắc đúng
         ['common', 'uncommon', 'rare', 'epic', 'legendary'].forEach(r => resEl.classList.remove(`rarity-${r}`));
         resultTextEl.textContent = "";
         resultImageEl.classList.remove('is-visible');
@@ -169,23 +170,47 @@ document.addEventListener('DOMContentLoaded', () => {
         explorerLink.classList.add('hidden');
         shareBtn.classList.add('hidden');
     
-        // Generate traits
+        // 2. Generate các thuộc tính hình ảnh
         const seed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${address}:${chainId}:${Date.now()}`));
         currentTraits = {};
         TRAIT_ORDER.forEach((traitType, index) => {
             const traitList = IMAGE_MANIFEST[traitType.toUpperCase()];
             const traitSeed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(seed + index));
-            currentTraits[traitType] = pick(traitList, traitSeed);
+            // Đảm bảo pick() trả về một giá trị hợp lệ
+            currentTraits[traitType] = pick(traitList, traitSeed) || 'default';
         });
-        currentTraits['rarity'] = pick(RARITY_WEIGHTS, ethers.utils.keccak256(ethers.utils.toUtf8Bytes(seed + 'r')));
+    
+        // 3. Xác định độ hiếm (Rarity)
+        // Ưu tiên kiểm tra công thức trước
+        let calculatedRarity = determineRarityFromRecipes(currentTraits);
+    
+        if (calculatedRarity) {
+            // Nếu khớp với một công thức đặc biệt (Rare, Epic, Legendary), gán độ hiếm đó
+            currentTraits['rarity'] = calculatedRarity;
+            console.log(`%cRarity determined by RECIPE: ${calculatedRarity}`, 'color: #ffaf00; font-weight: bold;');
+    
+        } else {
+            // Nếu không khớp công thức nào, roll ngẫu nhiên giữa Common và Uncommon
+            const commonUncommonWeights = [
+                ...Array(70).fill('Common'),    // 70% cơ hội
+                ...Array(30).fill('Uncommon')   // 30% cơ hội
+            ];
+            const raritySeed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(seed + 'r'));
+            currentTraits['rarity'] = pick(commonUncommonWeights, raritySeed);
+            console.log(`Rarity determined by RANDOM fallback: ${currentTraits['rarity']}`);
+        }
         
-        // Update UI with new traits
-        resEl.classList.add(`rarity-${currentTraits.rarity.toLowerCase()}`);
-        resultTextEl.innerHTML = `Rolled a <strong class="rarity-${currentTraits.rarity.toLowerCase()}">${currentTraits.rarity}</strong> kit! Ready to mint.`;
+        // 4. Cập nhật UI với các thuộc tính và độ hiếm mới
+        const rarityClass = `rarity-${currentTraits.rarity.toLowerCase()}`;
+        resEl.classList.add(rarityClass);
+        resultTextEl.innerHTML = `Rolled a <strong class="${rarityClass}">${currentTraits.rarity}</strong> kit! Ready to mint.`;
+        
         generateAndDisplayImage(currentTraits);
+        
         mintBtn.classList.remove('hidden');
         previewBtn.classList.remove('hidden');
     
+        // 5. Kích hoạt hiệu ứng ăn mừng nếu độ hiếm đủ cao
         setTimeout(() => triggerCelebration(currentTraits.rarity), 400); 
     }
     
@@ -335,6 +360,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    function displayTraitLibrary() {
+        // Nếu các biến cần thiết không tồn tại, không làm gì cả.
+        if (typeof IMAGE_MANIFEST === 'undefined' || typeof TRAIT_ORDER === 'undefined') {
+            console.error("IMAGE_MANIFEST or TRAIT_ORDER is not defined.");
+            return;
+        }
+    
+        const container = $('libraryContainer');
+        container.innerHTML = ''; // Xóa nội dung mặc định
+    
+        // Lặp qua từng LOẠI thuộc tính (background, character, etc.)
+        TRAIT_ORDER.forEach(traitType => {
+            // Tạo một khu vực cho mỗi loại
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'library-section';
+    
+            const title = traitType.charAt(0).toUpperCase() + traitType.slice(1); // Viết hoa chữ cái đầu
+            sectionEl.innerHTML = `<h3 class="library-section-title">${title}</h3>`;
+            
+            // Tạo lưới để chứa các ảnh
+            const gridEl = document.createElement('div');
+            gridEl.className = 'library-grid';
+    
+            const traits = IMAGE_MANIFEST[traitType.toUpperCase()];
+            if (!traits || traits.length === 0) return;
+    
+            // Lặp qua từng GIÁ TRỊ thuộc tính (Knight, Mage, etc.)
+            traits.forEach(traitValue => {
+                if (traitValue === 'default') return; // Bỏ qua giá trị 'default' nếu có
+    
+                const itemEl = document.createElement('div');
+                itemEl.className = 'library-item';
+                
+                const imagePath = `assets/images/${traitType}/${traitValue}.png`;
+                
+                itemEl.innerHTML = `
+                    <img src="${imagePath}" alt="${traitValue}" title="${traitValue}">
+                    <span class="library-item-name">${traitValue}</span>
+                `;
+                gridEl.appendChild(itemEl);
+            });
+    
+            sectionEl.appendChild(gridEl);
+            container.appendChild(sectionEl);
+        });
+    }
+
+
     function renderNftList(metadataList, container) {
         container.innerHTML = '';
 
@@ -552,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         refreshGlobalBtn.addEventListener('click', displayGlobalNFTs);
         rarityFilter.addEventListener('change', applyFilters);
-
+        displayTraitLibrary();
         // Ensures gradient border animation doesn't pause on button clicks
         document.addEventListener('click', (e) => {
             if (e.target.closest('.btn')) {
