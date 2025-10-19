@@ -788,3 +788,201 @@ header {
     text-align: center;
     word-break: break-all;
 }
+
+
+/* =====================================================================
+   11. Blending Altar UI Styles
+   ===================================================================== */
+
+/* Lưới chứa các NFT của người dùng để lựa chọn */
+.blending-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
+    gap: 12px; 
+    margin-top: 15px; 
+    max-height: 260px; /* Giới hạn chiều cao để không chiếm quá nhiều không gian */
+    overflow-y: auto;  /* Thêm thanh cuộn nếu có nhiều NFT */
+    background: var(--bg-dark); 
+    padding: 12px; 
+    border-radius: var(--radius-md); 
+    border: 1px solid var(--border);
+}
+
+/* Tùy chỉnh mỗi NFT item trong lưới blending */
+.blending-grid .nft-item { 
+    width: 100%; /* Chiều rộng linh hoạt */
+    height: auto;
+    aspect-ratio: 1 / 1; /* Giữ tỷ lệ vuông */
+    cursor: pointer; 
+    border: 2px solid transparent; /* Border ẩn để layout không bị giật khi hover */
+    transition: all 0.2s ease;
+    border-radius: var(--radius-md); /* Thêm bo góc */
+}
+
+.blending-grid .nft-item:hover { 
+    border-color: var(--accent-blue); /* Hiệu ứng khi di chuột qua */
+    transform: translateY(-2px);
+}
+
+/* CSS cho trạng thái "đã được chọn" */
+.blending-grid .nft-item.selected { 
+    border-color: var(--accent-gold); 
+    box-shadow: 0 0 15px rgba(255, 175, 0, 0.5); 
+    opacity: 0.4; /* Làm mờ đi để người dùng biết nó đã được chọn */
+    cursor: not-allowed;
+}
+
+/* Khu vực 3 khe cắm NFT */
+.blending-slots { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 15px; 
+    padding: 20px; 
+    border-radius: var(--radius-md); 
+    border: 2px dashed var(--border); 
+    margin: 20px 0; 
+}
+
+/* Tùy chỉnh mỗi khe cắm */
+.blending-slot { 
+    width: 90px; 
+    height: 90px; 
+    background: var(--bg-light); 
+    border-radius: var(--radius-md); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: var(--muted); 
+    font-size: 28px; 
+    transition: transform 0.2s ease;
+}
+
+.blending-slot:not(:empty) {
+    transform: scale(1.05);
+}
+
+.blending-slot img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    border-radius: var(--radius-md); 
+}
+
+/* Khu vực chứa nút bấm và trạng thái */
+#blendActionContainer { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; 
+    margin-top: 15px; 
+}
+
+#blendBtn:disabled {
+    background: var(--muted);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* =====================================================================
+   12. Blending Prediction & Congrats Styles
+   ===================================================================== */
+
+/* Container cho khu vực dự đoán tỷ lệ */
+.rarity-prediction-container {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin: 10px 0 20px 0;
+    min-height: 60px;
+}
+
+/* Lưới hiển thị các tỷ lệ % */
+.rarity-chance-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Mỗi item trong lưới tỷ lệ */
+.rarity-chance-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.rarity-chance-item .rarity-name {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.rarity-chance-item .rarity-percent {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Dòng thông báo chúc mừng trong Modal */
+.congrats-message {
+    font-size: 20px;
+    text-align: center;
+    padding: 10px 20px;
+    margin: 0 8px 15px 8px; /* Thêm margin để tách khỏi ảnh */
+    border-radius: var(--radius-md);
+    background: linear-gradient(90deg, rgba(247, 183, 51, 0.2), rgba(252, 74, 26, 0.2));
+}
+
+
+/* =====================================================================
+   13. NFT Rarity Border Styles
+   ===================================================================== */
+
+/* Viền mặc định cho tất cả NFT items để layout không bị xô lệch */
+.nft-item {
+    border: 2px solid var(--border);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 3px; /* Thêm một chút padding để viền không bị cắt vào ảnh */
+    background-color: var(--bg-dark); /* Thêm nền để padding có màu */
+}
+
+/* Tùy chỉnh ảnh bên trong để vừa với padding mới */
+.nft-item img {
+    border-radius: calc(var(--radius-md) - 4px); /* Giảm bo góc đi một chút */
+}
+
+/* --- Màu viền cho từng độ hiếm --- */
+
+.nft-item.rarity-common {
+    border-color: var(--muted);
+}
+
+.nft-item.rarity-uncommon {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 8px 0 rgba(63, 185, 80, 0.4);
+}
+
+.nft-item.rarity-rare {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px 0 rgba(88, 166, 255, 0.5);
+}
+
+.nft-item.rarity-epic {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 12px 0 rgba(163, 123, 255, 0.6);
+}
+
+.nft-item.rarity-legendary {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 15px 0 rgba(255, 175, 0, 0.7);
+}
+
+/* Hiệu ứng khi di chuột qua NFT item */
+.nft-item:hover {
+    transform: scale(1.05);
+}

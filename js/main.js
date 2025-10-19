@@ -1,6 +1,7 @@
 /**
  * Lucky Traits on ZenChain
- Author: Tử Vận
+ * Author: Tử Vận
+ * Version: 2.1 (with Blending Predictions & Auto-Preview)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,65 +9,67 @@ document.addEventListener('DOMContentLoaded', () => {
     // ====================================================================
     // 1. CONFIGURATION & CONSTANTS
     // ====================================================================
-    const CONTRACT_ADDRESS = "0x1E58581c90DE26228809398114c8dF8f713879DB";
+    
+    const CONTRACT_ADDRESS = "0x0A96Dc0e5509c914FdF911F74d329567d7c10381";
     const ZENCHAIN_TESTNET_CHAIN_ID = 8408;
     const ZENCHAIN_TESTNET_NAME = 'ZenChain Testnet';
     const ZENCHAIN_TESTNET_RPC_URL = 'https://zenchain-testnet.api.onfinality.io/public';
     const ZENCHAIN_TESTNET_EXPLORER_URL = 'https://zentrace.io';
     const ZENCHAIN_CURRENCY_SYMBOL = 'ZTC';
-
-    const RARITY_WEIGHTS = [
-        ...Array(50).fill('Common'),
-        ...Array(25).fill('Uncommon'),
-        ...Array(15).fill('Rare'),
-        ...Array(8).fill('Epic'),
-        ...Array(2).fill('Legendary')
-    ];
+    const RARITY_SCORES = {
+        'Common': 1,
+        'Uncommon': 3,
+        'Rare': 7,
+        'Epic': 15,
+        'Legendary': 30
+    };
     
+    const RARITY_LEVELS = {
+        'Common': 0,
+        'Uncommon': 1,
+        'Rare': 2,
+        'Epic': 3,
+        'Legendary': 4
+    };
+    
+    // Mảng để lặp qua các độ hiếm theo thứ tự
+    const LEVEL_TO_RARITY = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
+
     // ====================================================================
     // 2. STATE VARIABLES
     // ====================================================================
     let provider, signer, address, chainId, contract;
     let currentTraits = null;
     let allNftsMetadata = [];
+    
+    // Biến trạng thái cho Blending
+    let userNftsForBlending = []; 
+    let selectedBlendSlots = [null, null, null];
 
     // ====================================================================
     // 3. DOM ELEMENT SELECTION
     // ====================================================================
     const $ = (id) => document.getElementById(id);
 
-    const connectBtn = $("connect");
-    const statusEl = $("status").lastElementChild;
-    const addrEl = $("addr");
-    const netEl = $("net");
-    const contractEl = $("contract");
-    const rollBtn = $("roll");
-    const mintBtn = $("mint");
-    const previewBtn = $("preview");
-    const shareBtn = $('shareBtn');
-    
-    const resEl = $("result");
-    const resultTextEl = $("resultText");
-    const resultImageEl = $("resultImage");
-    const mintStatusEl = $("mintStatus");
-    const explorerLink = $("explorerLink");
-    
-    const canvas = $('imageCanvas');
-    const ctx = canvas.getContext('2d');
+    const connectBtn = $("connect"), statusEl = $("status").lastElementChild, addrEl = $("addr");
+    const netEl = $("net"), contractEl = $("contract"), rollBtn = $("roll"), mintBtn = $("mint");
+    const previewBtn = $("preview"), shareBtn = $('shareBtn'), resEl = $("result");
+    const resultTextEl = $("resultText"), resultImageEl = $("resultImage"), mintStatusEl = $("mintStatus");
+    const explorerLink = $("explorerLink"), canvas = $('imageCanvas'), ctx = canvas.getContext('2d');
+    const viewMintsBtn = $("viewMints"), mintsContainer = $("mintsContainer");
+    const refreshGlobalBtn = $('refreshGlobal'), globalMintsContainer = $('globalMintsContainer');
+    const rarityFilter = $('rarityFilter'), collectionStats = $('collectionStats');
+    const previewModal = $("previewModal"), closeModalBtn = $("closeModal"), previewImage = $("previewImage");
+    const nftDetailModal = $("nftDetailModal"), closeDetailModalBtn = $("closeDetailModal");
 
-    const viewMintsBtn = $("viewMints");
-    const mintsContainer = $("mintsContainer");
-    const refreshGlobalBtn = $('refreshGlobal');
-    const globalMintsContainer = $('globalMintsContainer');
-    const rarityFilter = $('rarityFilter');
-    const collectionStats = $('collectionStats');
-
-    const previewModal = $("previewModal");
-    const closeModalBtn = $("closeModal");
-    const previewImage = $("previewImage");
-    
-    const nftDetailModal = $("nftDetailModal");
-    const closeDetailModalBtn = $("closeDetailModal");
+    // DOM Elements cho Blending
+    const blendingAltar = $('blendingAltar');
+    const userNftsGrid = $('userNftsForBlending');
+    const blendBtn = $('blendBtn');
+    const blendingStatusEl = $('blendingStatus');
+    const blendingSlots = [$('blendingSlot-0'), $('blendingSlot-1'), $('blendingSlot-2')];
+    const rarityPredictionEl = $('rarityPrediction');
+    const previewCongratsEl = $('previewCongrats');
 
     // ====================================================================
     // 4. WALLET & NETWORK INTERACTION
@@ -76,27 +79,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!window.ethereum) {
             return alert('Please install MetaMask.');
         }
-
         try {
             provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
             await provider.send('eth_requestAccounts', []);
             signer = provider.getSigner();
             address = await signer.getAddress();
-            
             const network = await provider.getNetwork();
             chainId = network.chainId;
-
             if (chainId !== ZENCHAIN_TESTNET_CHAIN_ID) {
                 await switchOrAddNetwork();
-                // Reloading after switching is often necessary for the provider to update correctly.
                 location.reload(); 
                 return;
             }
-            
             setupApp();
         } catch (err) { 
             console.error("Wallet connection failed:", err); 
-            alert('Wallet connection failed. Check the console (F12) for more details.'); 
+            alert('Wallet connection failed. Check console for details.'); 
         }
     }
 
@@ -107,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 params: [{ chainId: `0x${ZENCHAIN_TESTNET_CHAIN_ID.toString(16)}` }]
             });
         } catch (switchError) {
-            // This error code indicates that the chain has not been added to MetaMask.
             if (switchError.code === 4902) {
                 try {
                     await window.ethereum.request({
@@ -122,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 } catch (addError) {
                     console.error("Failed to add ZenChain Testnet:", addError);
-                    alert("Failed to add the ZenChain Testnet. Please add it manually.");
+                    alert("Failed to add ZenChain Testnet. Please add it manually.");
                 }
             }
         }
@@ -130,18 +127,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupApp() {
         contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-        
-        // Update UI with wallet info
         statusEl.textContent = `Wallet: ${address.slice(0, 6)}…${address.slice(-4)}`;
         addrEl.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
         netEl.textContent = `ChainId: ${chainId} (${ZENCHAIN_TESTNET_NAME})`;
         contractEl.textContent = CONTRACT_ADDRESS;
         connectBtn.innerHTML = '<i class="ri-check-line"></i> Connected';
         viewMintsBtn.classList.remove('hidden');
-        
         displayUserNFTs();
-        
-        // Listen for wallet changes
+        blendingAltar.classList.remove('hidden');
+        loadUserNftsForBlending();
         window.ethereum.on('accountsChanged', () => location.reload());
         window.ethereum.on('chainChanged', () => location.reload());
     }
@@ -158,11 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return alert('Essential application files (image-manifest.js, recipes.js) are missing or failed to load.');
         }
     
-        // 1. Reset UI cho lần roll mới
         resEl.classList.remove('is-rolling');
-        void resEl.offsetWidth; // Trigger reflow để restart animation
+        void resEl.offsetWidth; // Trigger reflow to restart animation
         resEl.classList.add('is-rolling');
-        // Xóa tất cả các class rarity cũ để đảm bảo màu sắc đúng
         ['common', 'uncommon', 'rare', 'epic', 'legendary'].forEach(r => resEl.classList.remove(`rarity-${r}`));
         resultTextEl.textContent = "";
         resultImageEl.classList.remove('is-visible');
@@ -170,37 +162,26 @@ document.addEventListener('DOMContentLoaded', () => {
         explorerLink.classList.add('hidden');
         shareBtn.classList.add('hidden');
     
-        // 2. Generate các thuộc tính hình ảnh
         const seed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${address}:${chainId}:${Date.now()}`));
         currentTraits = {};
         TRAIT_ORDER.forEach((traitType, index) => {
             const traitList = IMAGE_MANIFEST[traitType.toUpperCase()];
             const traitSeed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(seed + index));
-            // Đảm bảo pick() trả về một giá trị hợp lệ
             currentTraits[traitType] = pick(traitList, traitSeed) || 'default';
         });
     
-        // 3. Xác định độ hiếm (Rarity)
-        // Ưu tiên kiểm tra công thức trước
         let calculatedRarity = determineRarityFromRecipes(currentTraits);
     
         if (calculatedRarity) {
-            // Nếu khớp với một công thức đặc biệt (Rare, Epic, Legendary), gán độ hiếm đó
             currentTraits['rarity'] = calculatedRarity;
             console.log(`%cRarity determined by RECIPE: ${calculatedRarity}`, 'color: #ffaf00; font-weight: bold;');
-    
         } else {
-            // Nếu không khớp công thức nào, roll ngẫu nhiên giữa Common và Uncommon
-            const commonUncommonWeights = [
-                ...Array(70).fill('Common'),    // 70% cơ hội
-                ...Array(30).fill('Uncommon')   // 30% cơ hội
-            ];
+            const commonUncommonWeights = [...Array(70).fill('Common'), ...Array(30).fill('Uncommon')];
             const raritySeed = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(seed + 'r'));
             currentTraits['rarity'] = pick(commonUncommonWeights, raritySeed);
             console.log(`Rarity determined by RANDOM fallback: ${currentTraits['rarity']}`);
         }
         
-        // 4. Cập nhật UI với các thuộc tính và độ hiếm mới
         const rarityClass = `rarity-${currentTraits.rarity.toLowerCase()}`;
         resEl.classList.add(rarityClass);
         resultTextEl.innerHTML = `Rolled a <strong class="${rarityClass}">${currentTraits.rarity}</strong> kit! Ready to mint.`;
@@ -210,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mintBtn.classList.remove('hidden');
         previewBtn.classList.remove('hidden');
     
-        // 5. Kích hoạt hiệu ứng ăn mừng nếu độ hiếm đủ cao
         setTimeout(() => triggerCelebration(currentTraits.rarity), 400); 
     }
     
@@ -224,13 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
         mintBtn.innerHTML = `<i class="ri-loader-4-line spin"></i> Minting...`;
         
         try {
-            // Step 1: Upload image to IPFS
             mintStatusEl.textContent = "Step 1/3: Uploading image to IPFS...";
             const imageBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
             const imageResult = await uploadToPinata(imageBlob, `trait-kit-image-${Date.now()}.png`);
             const imageIpfsUrl = `ipfs://${imageResult.IpfsHash}`;
 
-            // Step 2: Upload metadata to IPFS
             mintStatusEl.textContent = "Step 2/3: Uploading metadata to IPFS...";
             const uniqueId = Date.now();
             const metadata = {
@@ -246,12 +224,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const metadataResult = await uploadToPinata(metadataBlob, `metadata-${uniqueId}.json`);
             const metadataIpfsUrl = `ipfs://${metadataResult.IpfsHash}`;
 
-            // Step 3: Send minting transaction
             mintStatusEl.textContent = "Step 3/3: Confirm transaction in your wallet...";
             const tx = await contract.safeMint(address, metadataIpfsUrl);
             await tx.wait();
 
-            // Handle successful mint
             mintStatusEl.textContent = `NFT Minted Successfully!`;
             explorerLink.href = `${ZENCHAIN_TESTNET_EXPLORER_URL}/tx/${tx.hash}`;
             explorerLink.classList.remove('hidden');
@@ -263,17 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             mintBtn.innerHTML = `<i class="ri-check-line"></i> Minted!`;
             
-            setTimeout(displayUserNFTs, 2500); // Refresh user's gallery after a delay
+            setTimeout(() => {
+                displayUserNFTs();
+                loadUserNftsForBlending();
+            }, 2500);
 
         } catch (error) {
             console.error("Minting failed:", error);
-            if (error.code === 'ACTION_REJECTED') {
-                mintStatusEl.textContent = "Transaction was rejected. Please try again.";
-            } else if (error.message.includes("Pinata")) {
-                 mintStatusEl.textContent = "Error: Could not upload to IPFS. Check Pinata key or network.";
-            } else {
-                mintStatusEl.textContent = "An error occurred during minting. Check console.";
-            }
+            mintStatusEl.textContent = error.reason || error.message || "An error occurred during minting.";
         } finally {
             mintBtn.disabled = false;
             mintBtn.innerHTML = `<i class="ri-copper-diamond-line"></i> 2. Mint NFT`;
@@ -286,13 +259,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const traitValue = traits[traitType];
             return `assets/images/${traitType}/${traitValue}.png`;
         });
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (const layerPath of imageLayers) {
             try {
-                if (layerPath.includes('/default.png')) {
-                     throw new Error(`A trait folder was likely empty.`);
-                }
                 const img = await loadImage(layerPath);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             } catch (error) {
@@ -312,23 +281,15 @@ document.addEventListener('DOMContentLoaded', () => {
     async function displayUserNFTs() {
         if (!address || !contract) return;
         mintsContainer.innerHTML = `<div class="muted"><i class="ri-loader-4-line spin"></i> Loading your NFTs...</div>`;
-
         try {
             const uris = await contract.getTokensOfOwner(address);
             if (uris.length === 0) {
-                mintsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="ri-inbox-unarchive-line"></i>
-                        <span>Your collection is empty</span>
-                        <p>Mint your first NFT to get started!</p>
-                    </div>`;
+                mintsContainer.innerHTML = `<div class="empty-state"><i class="ri-inbox-unarchive-line"></i><span>Your collection is empty</span><p>Mint your first NFT to get started!</p></div>`;
                 return;
             }
-
             const metadataPromises = uris.map(uri => fetchWithFallback(uri).catch(e => null));
             const userNftsMetadata = (await Promise.all(metadataPromises)).filter(Boolean);
             renderNftList(userNftsMetadata, mintsContainer);
-
         } catch (error) {
             console.error("Failed to load user NFTs:", error);
             mintsContainer.innerHTML = `<div class="muted">Error loading your NFTs. Check console.</div>`;
@@ -339,21 +300,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!contract) return;
         globalMintsContainer.innerHTML = `<div class="muted"><i class="ri-loader-4-line spin"></i> Loading global collection...</div>`;
         allNftsMetadata = [];
-    
         try {
-            const uris = await contract.getAllTokenURIs();
+            const sparseUris = await contract.getAllTokenURIs();
+            const uris = sparseUris.filter(uri => uri && uri !== "");
             if (uris.length === 0) {
-                globalMintsContainer.innerHTML = `<div class="muted">No NFTs have been minted yet.</div>`;
+                globalMintsContainer.innerHTML = `<div class="empty-state"><i class="ri-gallery-line"></i><span>No NFTs have been minted yet.</span></div>`;
                 return;
             }
-    
             const metadataPromises = uris.map(uri => fetchWithFallback(uri).catch(e => null));
             allNftsMetadata = (await Promise.all(metadataPromises)).filter(Boolean);
-            
             collectionStats.textContent = `${allNftsMetadata.length} NFTs`;
             populateFilters();
             applyFilters();
-    
         } catch (error) {
             console.error("Failed to load global NFTs:", error);
             globalMintsContainer.innerHTML = `<div class="muted">Error loading global collection. Check console.</div>`;
@@ -361,75 +319,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function displayTraitLibrary() {
-        // Nếu các biến cần thiết không tồn tại, không làm gì cả.
         if (typeof IMAGE_MANIFEST === 'undefined' || typeof TRAIT_ORDER === 'undefined') {
             console.error("IMAGE_MANIFEST or TRAIT_ORDER is not defined.");
             return;
         }
-    
         const container = $('libraryContainer');
-        container.innerHTML = ''; // Xóa nội dung mặc định
-    
-        // Lặp qua từng LOẠI thuộc tính (background, character, etc.)
+        container.innerHTML = '';
         TRAIT_ORDER.forEach(traitType => {
-            // Tạo một khu vực cho mỗi loại
             const sectionEl = document.createElement('div');
             sectionEl.className = 'library-section';
-    
-            const title = traitType.charAt(0).toUpperCase() + traitType.slice(1); // Viết hoa chữ cái đầu
+            const title = traitType.charAt(0).toUpperCase() + traitType.slice(1);
             sectionEl.innerHTML = `<h3 class="library-section-title">${title}</h3>`;
-            
-            // Tạo lưới để chứa các ảnh
             const gridEl = document.createElement('div');
             gridEl.className = 'library-grid';
-    
             const traits = IMAGE_MANIFEST[traitType.toUpperCase()];
             if (!traits || traits.length === 0) return;
-    
-            // Lặp qua từng GIÁ TRỊ thuộc tính (Knight, Mage, etc.)
             traits.forEach(traitValue => {
-                if (traitValue === 'default') return; // Bỏ qua giá trị 'default' nếu có
-    
+                if (traitValue === 'default') return;
                 const itemEl = document.createElement('div');
                 itemEl.className = 'library-item';
-                
                 const imagePath = `assets/images/${traitType}/${traitValue}.png`;
-                
-                itemEl.innerHTML = `
-                    <img src="${imagePath}" alt="${traitValue}" title="${traitValue}">
-                    <span class="library-item-name">${traitValue}</span>
-                `;
+                itemEl.innerHTML = `<img src="${imagePath}" alt="${traitValue}" title="${traitValue}"><span class="library-item-name">${traitValue}</span>`;
                 gridEl.appendChild(itemEl);
             });
-    
             sectionEl.appendChild(gridEl);
             container.appendChild(sectionEl);
         });
     }
 
-
     function renderNftList(metadataList, container) {
         container.innerHTML = '';
-
-        if (metadataList.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="ri-search-eye-line"></i>
-                    <span>No NFTs Found</span>
-                    <p>No NFTs match the current filter.</p>
-                </div>`;
+        const validMetadataList = metadataList.filter(Boolean);
+        if (validMetadataList.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="ri-search-eye-line"></i><span>No valid NFTs Found</span><p>Could not load NFT metadata.</p></div>`;
             return;
         }
-        
+    
         const ipfsGateway = 'https://ipfs.io/ipfs/';
-        metadataList.forEach((metadata, index) => {
+        validMetadataList.forEach((metadata) => {
+            if (!metadata || !metadata.image) {
+                const nftElement = document.createElement('div');
+                nftElement.className = 'nft-error';
+                nftElement.innerHTML = `<i class="ri-error-warning-line" title="Failed to load metadata"></i>`;
+                container.appendChild(nftElement);
+                return;
+            }
+    
             const nftElement = document.createElement('div');
             nftElement.className = 'nft-item';
             
-            const rarityAttr = metadata.attributes.find(a => a.trait_type === 'rarity');
-            if (rarityAttr) {
+            // === LOGIC THÊM VIỀN MÀU ===
+            // Tìm thuộc tính độ hiếm trong metadata
+            const rarityAttr = metadata.attributes.find(a => a.trait_type.toLowerCase() === 'rarity');
+            // Nếu tìm thấy, thêm class tương ứng (ví dụ: 'rarity-rare')
+            if (rarityAttr && rarityAttr.value) {
                 nftElement.classList.add(`rarity-${rarityAttr.value.toLowerCase()}`);
             }
+            // ============================
             
             const imgUrl = metadata.image.replace('ipfs://', ipfsGateway);
             nftElement.innerHTML = `<img src="${imgUrl}" alt="${metadata.name}" title="${metadata.name}">`;
@@ -439,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateFilters() {
-        const rarities = [...new Set(allNftsMetadata.map(meta => meta.attributes.find(a => a.trait_type === 'rarity')?.value).filter(Boolean))];
+        const rarities = [...new Set(allNftsMetadata.map(meta => meta.attributes.find(a => a.trait_type.toLowerCase() === 'rarity')?.value).filter(Boolean))];
         rarityFilter.innerHTML = '<option value="all">All Rarities</option>';
         rarities.forEach(rarity => {
             rarityFilter.add(new Option(rarity, rarity));
@@ -450,10 +396,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedRarity = rarityFilter.value;
         const filteredNfts = allNftsMetadata.filter(meta => {
             if (selectedRarity === 'all') return true;
-            const rarityAttr = meta.attributes.find(a => a.trait_type === 'rarity');
+            const rarityAttr = meta.attributes.find(a => a.trait_type.toLowerCase() === 'rarity');
             return rarityAttr && rarityAttr.value === selectedRarity;
         });
-        
         collectionStats.textContent = `Showing ${filteredNfts.length} of ${allNftsMetadata.length} NFTs`;
         renderNftList(filteredNfts, globalMintsContainer);
     }
@@ -466,40 +411,47 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentTraits || resultImageEl.classList.contains('hidden')) {
             return alert("Please roll for traits first to generate a valid image.");
         }
-
+        previewCongratsEl.classList.add('hidden');
         previewImage.src = resultImageEl.src;
         $('previewRarity').textContent = currentTraits.rarity || 'N/A';
-        $('previewCharacter').textContent = currentTraits[TRAIT_ORDER[0]] || 'N/A';
+        const characterTrait = TRAIT_ORDER.find(t => t.toLowerCase() === 'character') || TRAIT_ORDER[0];
+        $('previewCharacter').textContent = currentTraits[characterTrait] || 'N/A';
         $('previewRarity').className = `rarity-${(currentTraits.rarity || '').toLowerCase()}`;
         previewModal.classList.remove('hidden');
     }
 
     function closePreviewModal() {
         previewModal.classList.add('hidden');
+        previewCongratsEl.classList.add('hidden');
+    }
+
+    function openPreviewModalForNewNFT(metadata, traits) {
+        const imgUrl = metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+        const rarity = traits.rarity || 'N/A';
+        const characterTrait = TRAIT_ORDER.find(t => t.toLowerCase() === 'character') || TRAIT_ORDER[0];
+        const character = traits[characterTrait] || 'N/A';
+        previewImage.src = imgUrl;
+        $('previewRarity').textContent = rarity;
+        $('previewCharacter').textContent = character;
+        $('previewRarity').className = `rarity-${rarity.toLowerCase()}`;
+        previewCongratsEl.innerHTML = `Chúc mừng! Bạn nhận được NFT <strong class="rarity-${rarity.toLowerCase()}">${rarity}</strong>!`;
+        previewCongratsEl.classList.remove('hidden');
+        previewModal.classList.remove('hidden');
     }
 
     function openDetailModal(metadata) {
         if (!metadata) return;
-
         $('detailName').textContent = metadata.name;
         $('detailImage').src = metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
-
         const attributesContainer = $('detailAttributesContainer');
         attributesContainer.innerHTML = '';
         metadata.attributes.forEach(attr => {
             const attrElement = document.createElement('div');
             attrElement.className = 'attribute-item';
-            
-            let valueClass = (attr.trait_type.toLowerCase() === 'rarity') 
-                ? `rarity-${attr.value.toLowerCase()}` 
-                : '';
-
-            attrElement.innerHTML = `
-                <span class="type">${attr.trait_type.replace('_', ' ')}</span>
-                <span class="value ${valueClass}">${attr.value}</span>`;
+            let valueClass = (attr.trait_type.toLowerCase() === 'rarity') ? `rarity-${attr.value.toLowerCase()}` : '';
+            attrElement.innerHTML = `<span class="type">${attr.trait_type.replace('_', ' ')}</span><span class="value ${valueClass}">${attr.value}</span>`;
             attributesContainer.appendChild(attrElement);
         });
-
         nftDetailModal.classList.remove('hidden');
     }
 
@@ -508,19 +460,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function triggerCelebration(rarity) {
-        const fireworkDefaults = {
-            spread: 360,
-            ticks: 60,
-            gravity: 1,
-            decay: 0.94,
-            startVelocity: 30,
-            shapes: ['star'],
-        };
-    
+        const fireworkDefaults = { spread: 360, ticks: 60, gravity: 1, decay: 0.94, startVelocity: 30, shapes: ['star'], };
         const rarityEffects = {
-            'Rare': () => confetti({
-                ...fireworkDefaults, particleCount: 50, scalar: 1.2, colors: ['#58A6FF', '#A5D6FF', '#FFFFFF']
-            }),
+            'Rare': () => confetti({ ...fireworkDefaults, particleCount: 50, scalar: 1.2, colors: ['#58A6FF', '#A5D6FF', '#FFFFFF'] }),
             'Epic': () => {
                 confetti({ ...fireworkDefaults, particleCount: 70, origin: { x: 0.25, y: 0.6 }, colors: ['#A37BFF', '#D8BFFF', '#FFFFFF'] });
                 confetti({ ...fireworkDefaults, particleCount: 70, origin: { x: 0.75, y: 0.6 }, colors: ['#A37BFF', '#D8BFFF', '#FFFFFF'] });
@@ -528,22 +470,240 @@ document.addEventListener('DOMContentLoaded', () => {
             'Legendary': () => {
                 const end = Date.now() + 3 * 1000;
                 (function frame() {
-                    confetti({
-                        ...fireworkDefaults,
-                        particleCount: Math.random() * 20 + 40,
-                        origin: { x: Math.random(), y: Math.random() - 0.2 },
-                        colors: ['#FFD700', '#FFB700', '#FFFFFF', '#FFFACD']
-                    });
+                    confetti({ ...fireworkDefaults, particleCount: Math.random() * 20 + 40, origin: { x: Math.random(), y: Math.random() - 0.2 }, colors: ['#FFD700', '#FFB700', '#FFFFFF', '#FFFACD'] });
                     if (Date.now() < end) requestAnimationFrame(frame);
                 }());
             }
         };
-    
         rarityEffects[rarity]?.();
+    }
+    
+    // ====================================================================
+    // 8. BLENDING SYSTEM LOGIC
+    // ====================================================================
+
+    async function loadUserNftsForBlending() {
+        if (!address || !contract) return;
+        userNftsGrid.innerHTML = `<div class="muted"><i class="ri-loader-4-line spin"></i> Đang tải NFT của bạn...</div>`;
+        userNftsForBlending = [];
+        try {
+            const ownerTokenCount = await contract.balanceOf(address);
+            if (ownerTokenCount.toNumber() === 0) {
+                 userNftsGrid.innerHTML = `<div class="empty-state"><span>Bạn không có NFT nào để nâng cấp.</span></div>`;
+                 return;
+            }
+            const promises = [];
+            for (let i = 0; i < ownerTokenCount.toNumber(); i++) {
+                promises.push(contract.tokenOfOwnerByIndex(address, i));
+            }
+            const tokenIds = await Promise.all(promises);
+            const metadataPromises = tokenIds.map(tokenId =>
+                contract.tokenURI(tokenId).then(uri =>
+                    fetchWithFallback(uri).then(meta => (meta ? { ...meta, tokenId: tokenId.toNumber() } : null))
+                ).catch(() => null)
+            );
+            userNftsForBlending = (await Promise.all(metadataPromises)).filter(Boolean);
+            renderBlendingGrid();
+        } catch (error) {
+            console.error("Failed to load user NFTs for blending:", error);
+            userNftsGrid.innerHTML = `<div class="muted">Lỗi khi tải NFT. Vui lòng thử lại.</div>`;
+        }
+    }
+
+    function renderBlendingGrid() {
+        userNftsGrid.innerHTML = '';
+        if (userNftsForBlending.length === 0) {
+            userNftsGrid.innerHTML = `<div class="empty-state"><span>Bạn không có NFT nào.</span></div>`;
+            return;
+        }
+        userNftsForBlending.forEach(meta => {
+            const nftElement = document.createElement('div');
+            nftElement.className = 'nft-item';
+            nftElement.dataset.tokenId = meta.tokenId;
+            const rarityAttr = meta.attributes ? meta.attributes.find(a => a.trait_type.toLowerCase() === 'rarity') : null;
+            if (rarityAttr && rarityAttr.value) {
+                nftElement.classList.add(`rarity-${rarityAttr.value.toLowerCase()}`);
+            }
+            if (selectedBlendSlots.some(slot => slot && slot.tokenId === meta.tokenId)) {
+                nftElement.classList.add('selected');
+            }
+            const imgUrl = meta.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+            nftElement.innerHTML = `<img src="${imgUrl}" alt="${meta.name}" title="${meta.name}">`;
+            nftElement.addEventListener('click', () => handleNftSelection(meta));
+            userNftsGrid.appendChild(nftElement);
+        });
+    }
+
+    function handleNftSelection(nftMeta) {
+        const isAlreadySelected = selectedBlendSlots.some(slot => slot && slot.tokenId === nftMeta.tokenId);
+        if (blendBtn.disabled === false && !isAlreadySelected) return;
+        const alreadySelectedSlotIndex = selectedBlendSlots.findIndex(slot => slot && slot.tokenId === nftMeta.tokenId);
+        if (alreadySelectedSlotIndex !== -1) {
+            selectedBlendSlots[alreadySelectedSlotIndex] = null;
+        } else {
+            const emptySlotIndex = selectedBlendSlots.findIndex(slot => slot === null);
+            if (emptySlotIndex !== -1) {
+                selectedBlendSlots[emptySlotIndex] = nftMeta;
+            }
+        }
+        updateBlendingUI();
+    }
+    
+    /**
+     * HÀM LOGIC TRUNG TÂM ĐÃ SỬA LỖI: Thêm các lớp kiểm tra an toàn.
+     */
+    function getBlendRarityPrediction(selectedNfts) {
+        if (!selectedNfts || selectedNfts.length === 0) return null;
+
+        let totalScore = 0;
+        let totalLevel = 0;
+        
+        selectedNfts.forEach(meta => {
+            // KIỂM TRA AN TOÀN: Đảm bảo 'meta' và 'meta.attributes' tồn tại
+            if (meta && meta.attributes && Array.isArray(meta.attributes)) {
+                const rarityAttr = meta.attributes.find(a => a.trait_type && a.trait_type.toLowerCase() === 'rarity');
+                // KIỂM TRA AN TOÀN: Đảm bảo tìm thấy thuộc tính và nó có giá trị
+                if (rarityAttr && rarityAttr.value) {
+                    totalScore += RARITY_SCORES[rarityAttr.value] || 0;
+                    totalLevel += RARITY_LEVELS[rarityAttr.value] || 0;
+                }
+            }
+        });
+
+        const averageLevel = totalLevel / selectedNfts.length;
+        const floorLevel = Math.floor(averageLevel);
+        const baseWeights = { 'Common': 5, 'Uncommon': 10, 'Rare': 20, 'Epic': 30, 'Legendary': 15 };
+        let finalWeights = {};
+
+        for (const rarityName in RARITY_LEVELS) {
+            const currentLevel = RARITY_LEVELS[rarityName];
+            if (currentLevel < floorLevel) {
+                finalWeights[rarityName] = 0;
+            } else {
+                let weight = baseWeights[rarityName];
+                let bonus = Math.floor(totalScore / 5) * (currentLevel - floorLevel + 1);
+                finalWeights[rarityName] = weight + bonus;
+            }
+        }
+        
+        if (floorLevel === 3) finalWeights['Legendary'] += totalScore;
+        if (floorLevel >= 4) finalWeights = { 'Common': 0, 'Uncommon': 0, 'Rare': 0, 'Epic': 0, 'Legendary': 1 };
+
+        return finalWeights;
+    }
+
+    // ĐÃ SỬA LỖI: Xử lý trường hợp 'weights' có thể là null
+    function calculateAndDisplayRarityChances() {
+        const selectedNfts = selectedBlendSlots.filter(Boolean);
+        const predictionContainer = $('rarityPrediction');
+        const weights = getBlendRarityPrediction(selectedNfts);
+
+        if (!weights) {
+            predictionContainer.innerHTML = `<div class="muted">Chọn NFT để xem tỷ lệ độ hiếm có thể nhận được.</div>`;
+            return;
+        }
+
+        const totalWeight = Object.values(weights).reduce((sum, current) => sum + current, 0);
+        if (totalWeight === 0) {
+            predictionContainer.innerHTML = `<div class="muted">Không thể tính toán tỷ lệ.</div>`;
+            return;
+        }
+        
+        let html = '<div class="rarity-chance-grid">';
+        LEVEL_TO_RARITY.forEach(rarity => {
+            if (weights[rarity] > 0) {
+                const percentage = ((weights[rarity] / totalWeight) * 100).toFixed(1);
+                html += `<div class="rarity-chance-item"><span class="rarity-name rarity-${rarity.toLowerCase()}">${rarity}</span><span class="rarity-percent">${percentage}%</span></div>`;
+            }
+        });
+        html += '</div>';
+        predictionContainer.innerHTML = html;
+    }
+
+    function updateBlendingUI() {
+        blendingSlots.forEach((slotEl, index) => {
+            const nft = selectedBlendSlots[index];
+            if (nft && nft.image) {
+                const imgUrl = nft.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                slotEl.innerHTML = `<img src="${imgUrl}" alt="${nft.name}">`;
+            } else {
+                slotEl.innerHTML = `<i class="ri-question-mark"></i>`;
+            }
+        });
+        renderBlendingGrid();
+        const selectedCount = selectedBlendSlots.filter(Boolean).length;
+        if (selectedCount === 3) {
+            blendBtn.disabled = false;
+            blendBtn.innerHTML = `<i class="ri-flask-line"></i> Bắt Đầu Pha Trộn!`;
+        } else {
+            blendBtn.disabled = true;
+            blendBtn.innerHTML = `<i class="ri-flask-line"></i> Pha Trộn (Chọn ${3 - selectedCount} NFT)`;
+        }
+        calculateAndDisplayRarityChances();
+    }
+    
+    function determineBlendResult(burnedNftsMetadata) {
+        const weights = getBlendRarityPrediction(burnedNftsMetadata);
+        const weightedRarityPool = [];
+        if (weights) {
+            for (const rarity in weights) {
+                for (let i = 0; i < Math.round(weights[rarity]); i++) {
+                    weightedRarityPool.push(rarity);
+                }
+            }
+        }
+        
+        const newRarity = weightedRarityPool.length > 0 ? pick(weightedRarityPool, ethers.utils.randomBytes(32)) : 'Common'; // Fallback
+        const newTraits = {};
+        TRAIT_ORDER.forEach((traitType) => {
+            newTraits[traitType] = pick(IMAGE_MANIFEST[traitType.toUpperCase()], ethers.utils.randomBytes(32));
+        });
+        newTraits.rarity = newRarity;
+        return newTraits;
+    }
+
+    async function handleBlendProcess() {
+        const nftsToBlend = selectedBlendSlots.filter(Boolean);
+        if (nftsToBlend.length !== 3) return;
+        blendBtn.disabled = true;
+        blendingStatusEl.textContent = 'Bắt đầu quá trình...';
+        try {
+            blendingStatusEl.textContent = 'Bước 1/4: Tạo thuộc tính NFT mới...';
+            const newTraits = determineBlendResult(nftsToBlend);
+            await generateAndDisplayImage(newTraits);
+            blendingStatusEl.textContent = 'Bước 2/4: Tải ảnh mới lên IPFS...';
+            const imageBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const imageResult = await uploadToPinata(imageBlob, `blend-result-${Date.now()}.png`);
+            const imageIpfsUrl = `ipfs://${imageResult.IpfsHash}`;
+            blendingStatusEl.textContent = 'Bước 3/4: Tải metadata mới lên IPFS...';
+            const uniqueId = Date.now();
+            const metadata = { name: `Blended TraitKit #${uniqueId}`, description: "An upgraded TraitKit NFT, forged from the essence of others.", image: imageIpfsUrl, attributes: Object.entries(newTraits).map(([key, value]) => ({ trait_type: key.toLowerCase().replace('_', ' '), value: value })) };
+            const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
+            const metadataResult = await uploadToPinata(metadataBlob, `blend-meta-${uniqueId}.json`);
+            const newUri = `ipfs://${metadataResult.IpfsHash}`;
+            blendingStatusEl.textContent = 'Bước 4/4: Vui lòng xác nhận giao dịch trong ví...';
+            const tokenIdsToBurn = nftsToBlend.map(nft => nft.tokenId);
+            const tx = await contract.blendAndMint(address, tokenIdsToBurn, newUri);
+            await tx.wait();
+            blendingStatusEl.textContent = 'Pha trộn thành công!';
+            triggerCelebration(newTraits.rarity);
+            openPreviewModalForNewNFT(metadata, newTraits);
+            setTimeout(() => {
+                selectedBlendSlots = [null, null, null];
+                updateBlendingUI();
+                loadUserNftsForBlending();
+                displayUserNFTs();
+                blendingStatusEl.textContent = '';
+            }, 5000);
+        } catch (error) {
+            console.error("Blending process failed:", error);
+            blendingStatusEl.textContent = `Lỗi: ${error.reason || error.message || 'Giao dịch đã bị từ chối.'}`;
+            setTimeout(() => { updateBlendingUI(); }, 2000);
+        }
     }
 
     // ====================================================================
-    // 8. UTILITY FUNCTIONS
+    // 9. UTILITY FUNCTIONS
     // ====================================================================
     
     function pick(arr, seed) {
@@ -565,7 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function uploadToPinata(file, fileName) {
-        if (!PINATA_JWT) {
+        if (typeof PINATA_JWT === 'undefined' || !PINATA_JWT) {
             throw new Error("Pinata JWT key is not defined in js/config.js");
         }
         const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
@@ -577,40 +737,50 @@ document.addEventListener('DOMContentLoaded', () => {
             body: data
         });
         if (!response.ok) {
-            throw new Error(`Pinata API Error: ${response.statusText}`);
+            const errorData = await response.text();
+            throw new Error(`Pinata API Error: ${response.statusText} - ${errorData}`);
         }
         return response.json();
     }
 
     async function fetchWithFallback(ipfsUri) {
-        const gateways = [
-            'https://ipfs.io/ipfs/',
-            'https://gateway.ipfs.io/ipfs/',
-            'https://dweb.link/ipfs/',
-            'https://cloudflare-ipfs.com/ipfs/',
-            'https://gateway.pinata.cloud/ipfs/'
-        ];
+        if (!ipfsUri || typeof ipfsUri !== 'string' || !ipfsUri.startsWith('ipfs://')) {
+            console.error("Invalid IPFS URI provided:", ipfsUri);
+            return null;
+        }
+        const hash = ipfsUri.substring(7);
+        if (!hash) return null;
+        const gateways = [ 'https://ipfs.io/ipfs/', 'https://gateway.pinata.cloud/ipfs/', 'https://dweb.link/ipfs/', 'https://cloudflare-ipfs.com/ipfs/' ];
         for (const gateway of gateways) {
             try {
-                const url = ipfsUri.replace('ipfs://', gateway);
-                const response = await fetch(url, { signal: AbortSignal.timeout(8000) }); 
-                if (response.ok) return response.json();
+                const url = `${gateway}${hash}`;
+                const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
+                if (response.ok) {
+                    const json = await response.json();
+                    if (json && json.image && json.name) {
+                        return json;
+                    }
+                }
             } catch (e) {
                 console.warn(`Gateway ${gateway} failed for ${ipfsUri}. Trying next...`);
             }
         }
-        throw new Error(`All IPFS gateways failed to fetch: ${ipfsUri}`);
+        console.error(`All IPFS gateways failed to fetch or returned invalid data for: ${ipfsUri}`);
+        return null;
     }
 
     // ====================================================================
-    // 9. INITIALIZATION
+    // 10. INITIALIZATION
     // ====================================================================
 
     function init() {
         connectBtn.addEventListener('click', connectWallet);
         rollBtn.addEventListener('click', rollTraits);
         mintBtn.addEventListener('click', mintNFT);
-        viewMintsBtn.addEventListener('click', displayUserNFTs);
+        viewMintsBtn.addEventListener('click', () => {
+            displayUserNFTs();
+            loadUserNftsForBlending();
+        });
         
         previewBtn.addEventListener('click', openPreviewModal);
         closeModalBtn.addEventListener('click', closePreviewModal);
@@ -625,14 +795,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         refreshGlobalBtn.addEventListener('click', displayGlobalNFTs);
         rarityFilter.addEventListener('change', applyFilters);
+        
+        blendBtn.addEventListener('click', handleBlendProcess);
+
         displayTraitLibrary();
-        // Ensures gradient border animation doesn't pause on button clicks
+        
         document.addEventListener('click', (e) => {
             if (e.target.closest('.btn')) {
                 document.querySelectorAll('#result.out, .modal-content').forEach(el => {
                     const animation = window.getComputedStyle(el).animation;
                     el.style.animation = 'none';
-                    void el.offsetHeight; // Trigger reflow
+                    void el.offsetHeight;
                     el.style.animation = animation;
                 });
             }

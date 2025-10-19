@@ -122,6 +122,50 @@
         </section> 
 
         <!-- ======================================================== -->
+        <!-- === KHU VỰC NÂNG CẤP / PHA TRỘN (BLENDING ALTAR) === -->
+        <!-- ======================================================== -->
+        <section id="blendingAltar" class="card animate-on-load delay-3 hidden" style="margin-top: 24px;">
+            <!-- Header của Section -->
+            <div class="collection-header" style="border-bottom: none; padding-bottom: 0;">
+                <div class="title-group">
+                    <h2 class="title-gradient" style="font-size: 24px;">Bàn Thờ Nâng Cấp</h2>
+                </div>
+            </div>
+            <p class="sub" style="margin-top: 5px;">Chọn 3 NFT từ bộ sưu tập của bạn để hiến tế. Bạn sẽ nhận lại một NFT hoàn toàn mới, có cơ hội sở hữu thuộc tính hiếm hơn.</p>
+            
+            <!-- Slots để hiển thị các NFT đã được chọn -->
+            <div class="blending-slots">
+                <div id="blendingSlot-0" class="blending-slot"><i class="ri-question-mark"></i></div>
+                <div id="blendingSlot-1" class="blending-slot"><i class="ri-question-mark"></i></div>
+                <div id="blendingSlot-2" class="blending-slot"><i class="ri-question-mark"></i></div>
+            </div>
+        
+            <!-- === KHU VỰC MỚI: HIỂN THỊ TỶ LỆ DỰ ĐOÁN === -->
+            <div id="rarityPrediction" class="rarity-prediction-container">
+                <!-- JavaScript sẽ điền nội dung vào đây -->
+                <div class="muted">Chọn NFT để xem tỷ lệ độ hiếm có thể nhận được.</div>
+            </div>
+            <!-- ============================================= -->
+        
+            <!-- Nơi hiển thị các NFT của người dùng để họ chọn -->
+            <div class="muted">Bộ sưu tập của bạn (chọn để hiến tế):</div>
+            <div id="userNftsForBlending" class="blending-grid">
+                <div class="empty-state">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Kết nối ví để chọn NFT.</span>
+                </div>
+            </div>
+            
+            <!-- Khu vực nút hành động và trạng thái -->
+            <div id="blendActionContainer">
+                <button id="blendBtn" class="btn" disabled><i class="ri-flask-line"></i> Pha Trộn (Chọn 3 NFT)</button>
+                <div id="blendingStatus" class="sub" style="min-height: 20px; margin-top: 10px;"></div>
+            </div>
+        </section>
+
+        
+
+        <!-- ======================================================== -->
         <!-- === THƯ VIỆN THUỘC TÍNH (TRAIT LIBRARY) === -->
         <!-- ======================================================== -->
         <section id="traitLibrary" class="card animate-on-load delay-3" style="margin-top: 24px;">
@@ -156,6 +200,7 @@
 
             <!-- Modal Body (Chứa cả ảnh và thông tin overlay) -->
             <div class="modal-body">
+                <h3 id="previewCongrats" class="congrats-message hidden"></h3>
                 <img id="previewImage" src="" alt="NFT Preview Image">
                 
                 <!-- Thông tin Traits Overlay -->
